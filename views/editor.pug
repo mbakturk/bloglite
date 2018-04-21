@@ -1,0 +1,31 @@
+include mixins.pug
+include utils/admin-navbar.pug
+html
+    head    
+        +stylesheets
+        link(rel="stylesheet", href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/rainbow.min.css")
+        script(src="//twemoji.maxcdn.com/2/twemoji.min.js?2.6")
+        script(data-main="js/editor.js" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js")
+    body
+        +navbar("editor")
+        .container.editor-page
+            .row#alert-container                  
+            .row
+                .col
+                    h1.mt-3.mb-3 Editor
+            .row
+                .col
+                    input#title.form-control(type="text" placeholder="Title" value= post ? post.title : '')
+            .row.justify-content-end
+                #mode-tab.btn-group.col-auto.nav
+                    a.btn.btn-primary.active(href="#nav-markdown") Markdown
+                    a.btn.btn-primary(href="#nav-visual" onclick="visual()") Visual
+            .row
+                .col.tab-content
+                    #nav-markdown.fade.show.tab-pane.active
+                        textarea#entry.form-control(rows=20 placeholder="Entry")= post ? post.entry : ''
+                    #nav-visual.fade.tab-pane asd
+            .row.justify-content-end
+                .col-auto
+                    button.btn.btn-primary(type="button" onclick=`editor.publish(${post ? post.id : -1})`) Publish
+            

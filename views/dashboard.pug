@@ -1,0 +1,42 @@
+include mixins.pug
+include utils/admin-navbar.pug
+html
+    head
+        +stylesheets
+    body
+        +navbar("dashboard")
+        .container
+            .row
+                .col-auto 
+                    h1.mt-3.mb-3 Posts
+            .row
+                .col
+                    table.table
+                        thead
+                            tr
+                                th(scope="col") Title
+                                th(scope="col") Author
+                                th(scope="col") Date
+                                th(scope="col") Action
+                        tbody                            
+                            each post in postList
+                                tr
+                                    th(scope="row")= post.title
+                                    th= post.authorName
+                                    th= post.postDate
+                                    th
+                                        a.btn.btn-primary.btn-sm.mr-2(href=`/s/editor?post=${post.id}`) Edit
+                                        a.btn.btn-primary.btn-sm(href="javascript:;" onclick=`deletePost(${post.id})`) Delete
+            .row.justify-content-center
+                if pageNum > 1
+                    a.btn.btn-primary.btn-sm.page-num-button(href=`/s/dashboard?page=${pageNum-1}`) previous
+                .col-auto.font-weight-bold.d-flex.align-items-center #{pageNum} of #{totalPage}
+                if pageNum < totalPage
+                    a.btn.btn-primary.btn-sm.page-num-button(href=`/s/dashboard?page=${pageNum+1}`) next                
+        +javascriptLibs
+        script.
+            function deletePost(postId){
+                $.post("/s/deletePost",{id : postId}).done(function(){
+                    location.reload();
+                })
+            }

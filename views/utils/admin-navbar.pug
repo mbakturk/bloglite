@@ -1,0 +1,11 @@
+mixin navbar(activeLink)
+    nav.navbar-expand-lg.navbar.navbar-dark.bg-dark
+        a.navbar-brand(href="/s/dashboard") BlogLite
+        button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation")
+            span.navbar-toggler-icon
+        #navbarNav.collapse.navbar-collapse
+            ul.navbar-nav
+                li.nav-item(class= (activeLink === "dashboard") ? "active" : "")
+                    a.nav-link(href="/s/dashboard") Dashboard
+                li.nav-item(class= (activeLink === "editor") ? "active" : "")
+                    a.nav-link(href="/s/editor") Create Post
