@@ -1,1 +1,4 @@
 node_modules/
+blog.db3
+dist/
+sessions/
