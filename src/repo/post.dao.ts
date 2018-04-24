@@ -9,11 +9,11 @@ export class PostDAO {
 
     @inject(Database) private _db: Database;
 
-    public getPostList(offset?:number, count?:number): Post[] {
+    public getPostList(count?:number, offset?:number): Post[] {
         let query: string = `SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.entry, u.id as authorId, u.name as authorName 
         FROM t_post as p LEFT JOIN t_user u ON p.author == u.id`;
 
-        if(offset && count) {
+        if(Number.isInteger(offset) && Number.isInteger(count)) {
             query += ` LIMIT ${count} OFFSET ${offset}`;
         }
 

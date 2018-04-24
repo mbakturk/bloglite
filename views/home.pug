@@ -1,0 +1,28 @@
+include mixins.pug
+html
+    head
+        +stylesheets
+    body
+        .container-fluid
+            .row.border-bottom
+                .container
+                    .row
+                        .col-auto 
+                            a.brand-text(href="/"): h3.mt-3.mb-3 BlogLite
+            .row
+                .container.mt-4
+                    .row
+                        .col-2 Right Side
+                        .col-10
+                            each post in postList
+                                .row.mt-4: .col
+                                    a.post-title(href=`/${post.permalink}`): h1= post.title
+                                    p.post-meta.pb-3.border-bottom= post.postDate
+                                    div!= post.entry
+                    .row.justify-content-center
+                        if pageNum > 1
+                            a.btn.btn-secondary.btn-sm.page-num-button(href=`/?page=${pageNum-1}`) previous
+                        .col-auto.font-weight-bold.d-flex.align-items-center #{pageNum}
+                        if pageNum < totalPage
+                            a.btn.btn-secondary.btn-sm.page-num-button(href=`/?page=${pageNum+1}`) next 
+        +javascriptLibs
