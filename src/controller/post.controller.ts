@@ -1,14 +1,13 @@
+import { map } from 'rxjs/operators';
 import { MarkdownIt } from 'markdown-it';
 import { PostDAO } from './../repo/post.dao';
-import { User } from './../repo/entity/user';
-import { UserDAO } from "./../repo/user.dao";
+
 import "reflect-metadata";
 import { interfaces, controller, httpGet, requestParam, response, queryParam } from "inversify-express-utils";
-import { injectable, inject } from "inversify";
-import * as session from "express-session";
+import { inject } from "inversify";
 import * as express from "express";
-import { Post } from '../repo/entity/post';
 import markdownit = require('markdown-it');
+import { zip } from 'rxjs';
 
 
 @controller("/")
@@ -25,22 +24,35 @@ export class PostController implements interfaces.Controller {
         if (page) {
             mPage = +page - 1;
         }
+        return zip(this.postDAO.getPostList(this.PAGE_SIZE, this.PAGE_SIZE * mPage), this.postDAO.getPostCount())
+            .pipe(
+                map(d => ({
+                    postList: d[0].map(post => {
+                        post.entry = this.md.render(post.entry)
+                        return post;
+                    }),
+                    totalPage: Math.ceil(d[1] / this.PAGE_SIZE)
+                }))
+            ).toPromise()
+            .then(r => {
+                res.render("home", { postList: r.postList, pageNum: mPage + 1, totalPage: r.totalPage });
+            })
 
-        const postList: Post[] = this.postDAO.getPostList(this.PAGE_SIZE, this.PAGE_SIZE * mPage);
-        postList.forEach(post => post.entry = this.md.render(post.entry));
 
-        let totalPage: number = this.postDAO.getPostCount() / this.PAGE_SIZE;
-
-        res.render("home", { postList, pageNum: mPage + 1, totalPage: totalPage === 0 ? 1 : Math.ceil(totalPage) });
     }
 
-    @httpGet(":permalink")
+    @httpGet("p/:permalink")
     private postPage(@requestParam("permalink") permalink: string, @response() res: express.Response) {
-        
-        const post: Post = this.postDAO.getPostByPermalink(permalink);
-        post.entry = this.md.render(post.entry);        
-
-        res.render("post", { post });
+        return this.postDAO.getPostByPermalink(permalink)
+            .pipe(
+                map(post => {
+                    post.entry = this.md.render(post.entry);
+                    return post;
+                })
+            ).toPromise()
+            .then(post => {
+                res.render("post", { post });
+            })
     }
 
 }

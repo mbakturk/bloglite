@@ -1,49 +1,35 @@
 import { injectable, inject } from "inversify";
 import "reflect-metadata";
-import { User } from "./entity/user";
 import { Post } from "./entity/post";
-import * as Database from "better-sqlite3";
+import { Database } from "../database";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @injectable()
 export class PostDAO {
 
-    @inject(Database) private _db: Database;
+    @inject(Database) private db: Database;
 
-    public getPostList(count?:number, offset?:number): Post[] {
-        let query: string = `SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.entry, u.id as authorId, u.name as authorName 
-        FROM t_post as p LEFT JOIN t_user u ON p.author == u.id`;
-
-        if(Number.isInteger(offset) && Number.isInteger(count)) {
-            query += ` LIMIT ${count} OFFSET ${offset}`;
-        }
-
-        return this._db.prepare(query).all();
+    public getPostList(count: number, offset: number): Observable<Post[]> {
+        return this.db.queryAll(`SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.entry, u.id as authorId, u.name as authorName 
+        FROM t_post as p LEFT JOIN t_user u ON p.author == u.id LIMIT ? OFFSET ?`, [count, offset]);
     }
 
-    public getPostLiteList(count?:number, offset?:number): Post[] {
-        let query: string = `SELECT p.id, p.title, p.permalink, p.post_date as postDate, u.name as authorName 
-        FROM t_post as p LEFT JOIN t_user u ON p.author == u.id`;
-
-        if(Number.isInteger(offset) && Number.isInteger(count)) {
-            query += ` LIMIT ${count} OFFSET ${offset}`;
-        }
-
-        return this._db.prepare(query).all();
+    public getPostLiteList(count: number, offset: number): Observable<Post[]> {
+        return this.db.queryAll(`SELECT p.id, p.title, p.permalink, p.post_date as postDate, u.name as authorName 
+        FROM t_post as p LEFT JOIN t_user u ON p.author == u.id LIMIT ? OFFSET ?`, [count, offset]);
+    }
+    
+    public createPost(title: string, permalink: string, entry: string, authorId: number): Observable<number> {
+        return this.db.run("INSERT INTO t_post (title, permalink, entry, author) VALUES (?,?,?,?)", [title, permalink, entry, authorId])
+        .pipe(map(data => data.lastID));
     }
 
-    public createPost(title: string, permalink: string, entry: string, authorId: number): number {
-        return <number>this._db.prepare(
-            `INSERT INTO t_post (title, permalink, entry, author) VALUES (?,?,?,?)`
-        ).run(title, permalink, entry, authorId).lastInsertROWID;
+    public deletePostById(id: number): Observable<any> {
+        return this.db.run(`DELETE FROM t_post WHERE id = ?`, [id]);
     }
 
-    public deletePostById(id: number): void {
-        this._db.prepare(
-            `DELETE FROM t_post WHERE id = ?`
-        ).run(id);
-    }
-
-    public updatePost(post: Post): void {
+    public updatePost(post: Post): Observable<any> {
         const updateables = ["title", "permalink", "entry"];
         let updates = [];
 
@@ -53,28 +39,28 @@ export class PostDAO {
             }
         });
 
-        this._db.prepare(
-            `UPDATE t_post SET ${updates.join(",")} WHERE id = ?`
-        ).run(post.id);
+        return this.db.run(
+            `UPDATE t_post SET ${updates.join(",")} WHERE id = ?`, [post.id]
+        );
     }
 
-    public getPostByPermalink(permalink: string): Post {
-        return this._db.prepare(
+    public getPostByPermalink(permalink: string): Observable<Post> {
+        return this.db.query(`SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.entry, u.id as authorId, u.name as authorName 
+             FROM t_post as p LEFT JOIN t_user u ON p.author == u.id WHERE p.permalink = ?`,[permalink]);
+    }
+
+    public getPostById(id: number): Observable<Post> {
+        return this.db.query(
             `SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.entry, u.id as authorId, u.name as authorName 
-             FROM t_post as p LEFT JOIN t_user u ON p.author == u.id WHERE p.permalink = ?`
-        ).get(permalink);
+             FROM t_post as p LEFT JOIN t_user u ON p.author == u.id WHERE p.id = ?`, [id]);
     }
 
-    public getPostById(id: number): Post {
-        return this._db.prepare(
-            `SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.entry, u.id as authorId, u.name as authorName 
-             FROM t_post as p LEFT JOIN t_user u ON p.author == u.id WHERE p.id = ?`
-        ).get(id);
-    }
-
-    public getPostCount(): number {
-        let count:number = +this._db.prepare(`SELECT value FROM t_metadata WHERE key = 't_post_count'`).get().value;
-        return Number.isInteger(count) ? count : 0;
+    public getPostCount(): Observable<number> {
+        return this.db.query(`SELECT value FROM t_metadata WHERE key = 't_post_count'`)
+            .pipe(map(row => {
+                const count = +row.value;
+                return Number.isInteger(count) ? count : 0;
+            }));
     }
 
 }

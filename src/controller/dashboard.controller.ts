@@ -7,6 +7,7 @@ import { injectable, inject } from "inversify";
 import * as session from "express-session";
 import * as express from "express";
 import { Post } from '../repo/entity/post';
+import { switchMap, map } from 'rxjs/operators';
 
 @controller("/s")
 export class DashboardController implements interfaces.Controller {
@@ -22,10 +23,15 @@ export class DashboardController implements interfaces.Controller {
             mPage = +page - 1;
         }
 
-        let postList: Post[] = this.postDAO.getPostLiteList(this.PAGE_SIZE, this.PAGE_SIZE * mPage);
-        let totalPage: number = this.postDAO.getPostCount() / this.PAGE_SIZE;
-        
-        res.render("dashboard", { postList, pageNum: mPage + 1, totalPage: totalPage === 0 ? 1 : Math.ceil(totalPage) });
+        return this.postDAO.getPostLiteList(this.PAGE_SIZE, this.PAGE_SIZE * mPage)
+            .pipe(
+                switchMap(postList => this.postDAO.getPostCount()
+                    .pipe(map(c => ({ totalPage: Math.ceil(c / this.PAGE_SIZE), postList })))
+                )
+            ).toPromise()
+            .then(r => {
+                res.render("dashboard", { postList: r.postList, pageNum: mPage + 1, totalPage: r.totalPage === 0 ? 1 : r.totalPage });
+            });
     }
 
 }

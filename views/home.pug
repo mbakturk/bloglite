@@ -7,22 +7,22 @@ html
             .row.border-bottom
                 .container
                     .row
-                        .col-auto 
-                            a.brand-text(href="/"): h3.mt-3.mb-3 BlogLite
+                        .col-11 
+                            a.brand-text(href="/"): h3.mt-3.mb-3 mbakturk.com
             .row
                 .container.mt-4
                     .row
-                        .col-2 Right Side
-                        .col-10
+                        .col-12
                             each post in postList
                                 .row.mt-4: .col
-                                    a.post-title(href=`/${post.permalink}`): h1= post.title
+                                    a.post-title(href=`/p/${post.permalink}`): h1= post.title
                                     p.post-meta.pb-3.border-bottom= post.postDate
                                     div!= post.entry
                     .row.justify-content-center
                         if pageNum > 1
-                            a.btn.btn-secondary.btn-sm.page-num-button(href=`/?page=${pageNum-1}`) previous
+                            a.btn.btn-secondary.btn-sm.page-num-button(href=`/?page=${pageNum-1}`) Önceki
                         .col-auto.font-weight-bold.d-flex.align-items-center #{pageNum}
                         if pageNum < totalPage
-                            a.btn.btn-secondary.btn-sm.page-num-button(href=`/?page=${pageNum+1}`) next 
+                            a.btn.btn-secondary.btn-sm.page-num-button(href=`/?page=${pageNum+1}`) Sonraki 
+        include utils/footer.pug
         +javascriptLibs

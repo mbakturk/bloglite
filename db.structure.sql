@@ -1,5 +1,5 @@
 --
--- File generated with SQLiteStudio v3.1.1 on Sun Apr 15 20:35:08 2018
+-- File generated with SQLiteStudio v3.1.1 on Sun Oct 21 16:24:58 2018
 --
 -- Text encoding used: UTF-8
 --
@@ -11,6 +11,9 @@ CREATE TABLE t_metadata ("key" VARCHAR PRIMARY KEY, value VARCHAR);
 
 -- Table: t_post
 CREATE TABLE t_post (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT UNIQUE, permalink TEXT UNIQUE, post_date DATETIME DEFAULT (CURRENT_TIMESTAMP), entry TEXT, author INTEGER REFERENCES t_user (id));
+
+-- Table: t_sessions
+CREATE TABLE t_sessions (sid PRIMARY KEY, expired, sess);
 
 -- Table: t_user
 CREATE TABLE t_user (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE, email TEXT UNIQUE, password TEXT UNIQUE);

@@ -1,0 +1,13 @@
+{
+    "server": {
+        "port": 3000
+    },
+    "database": {
+        "path": "blog.db3"
+    },
+    "log": {
+        "level": "debug",
+        "path": "../logs/",
+        "silent": false
+    }
+}

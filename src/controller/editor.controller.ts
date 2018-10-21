@@ -1,64 +1,71 @@
 import { BaseResp } from './model/response/base.resp';
 import { PostDAO } from './../repo/post.dao';
-import { User } from './../repo/entity/user';
-import { UserDAO } from "./../repo/user.dao";
 import "reflect-metadata";
-import { interfaces, controller, httpGet, httpPost, requestParam, response, queryParam } from "inversify-express-utils";
-import { injectable, inject } from "inversify";
-import * as session from "express-session";
-import * as express from "express";
+import { interfaces, controller, httpGet, httpPost, response, queryParam } from "inversify-express-utils";
+import { inject } from "inversify";
+import { Request, Response } from "express";
 import { Post } from '../repo/entity/post';
+import { map } from 'rxjs/operators';
 
 @controller("/s")
 export class EditorController implements interfaces.Controller {
 
     @inject(PostDAO) private postDAO: PostDAO;
-    private PAGE_SIZE: number = 10;
 
     @httpGet("/editor")
-    private editorPage(@queryParam("post") postId: string, @response() res: express.Response) {
-        const viewModel: any = {}
-        if (postId) {
-            viewModel.post = this.postDAO.getPostById(+postId);
-        }
-
-        res.render("editor", viewModel);
+    private editorPage(@queryParam("post") postId: string, @response() res:Response) {
+        return this.postDAO.getPostById(+postId)
+            .pipe(
+                map(post => ({ post }))
+            ).toPromise()
+            .then(viewModel => res.render("editor", viewModel))
     }
 
     @httpPost("/updatePost")
-    private updatePost(req: Express.Request & express.Request, res: express.Response) {
+    private updatePost(req: Request, res: Response) {
         const resp: BaseResp = { retCode: -1 };
         const post: Post = req.body;
         if (post) {
-            this.postDAO.updatePost(post)
-            resp.retCode = 0;
+            return this.postDAO.updatePost(post)
+                .toPromise()
+                .then(r => {
+                    resp.retCode = 0;
+                    res.json(resp);
+                });
         }
 
-        res.send(JSON.stringify(resp));
+        res.json(resp);
     }
 
     @httpPost("/createPost")
-    private createPost(req: Express.Request & express.Request, res: express.Response) {
+    private createPost(req: Request, res: Response) {
         const resp: BaseResp = { retCode: -1 };
         const post: Post = req.body;
         if (post) {
-            this.postDAO.createPost(post.title, Math.random() + "", post.entry, req.session.user.id);
-            resp.retCode = 0;
+            return this.postDAO.createPost(post.title, Math.random() + "", post.entry, req.session.user.id)
+                .toPromise()
+                .then(r => {
+                    resp.retCode = 0;
+                    res.json(resp);
+                });
         }
 
-        res.send(JSON.stringify(resp));
+        res.json(resp);
     }
 
     @httpPost("/deletePost")
-    private deletePost(req: Express.Request & express.Request, res: express.Response) {
+    private deletePost(req: Request, res: Response) {
         const resp: BaseResp = { retCode: -1 };
         const postId: number = req.body ? +req.body.id : null;
         if (postId) {
-            this.postDAO.deletePostById(postId);
-            resp.retCode = 0;
+            return this.postDAO.deletePostById(postId)
+                .toPromise()
+                .then(r => {
+                    resp.retCode = 0;
+                    res.json(resp);
+                })
         }
-
-        res.send(JSON.stringify(resp));
+        res.json(resp);
     }
 
 }

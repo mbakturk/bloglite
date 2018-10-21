@@ -2,3 +2,7 @@ node_modules/
 blog.db3
 dist/
 sessions/
+logs/
+
+
+package-lock.json

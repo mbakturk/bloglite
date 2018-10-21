@@ -1,10 +1,12 @@
-import { User } from './../repo/entity/user';
+import { SessionUtils } from './../utils/session.utils';
 import { UserDAO } from "./../repo/user.dao";
 import "reflect-metadata";
 import { interfaces, controller, httpGet, httpPost } from "inversify-express-utils";
-import { injectable, inject } from "inversify";
-import * as session from "express-session";
-import * as express from "express";
+import { inject } from "inversify";
+
+import { Request, Response, NextFunction } from "express";
+import { switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @controller("/s")
 export class LoginController implements interfaces.Controller {
@@ -12,7 +14,7 @@ export class LoginController implements interfaces.Controller {
     @inject(UserDAO) private userDAO: UserDAO;
 
     @httpGet("/")
-    private loginPage(req: Express.Request, res: express.Response, next: express.NextFunction) {
+    private loginPage(req: Request, res: Response, next: NextFunction) {
         if (req.session.user) {
             res.redirect("/s/dashboard")
             return;
@@ -21,17 +23,28 @@ export class LoginController implements interfaces.Controller {
     }
 
     @httpPost("/")
-    private authenticate(req: Express.Request & express.Request, res: express.Response, next: express.NextFunction) {
+    private authenticate(req: Request, res: Response, next: NextFunction) {
         // you might like to do a database look-up or something more scalable here
         if (req.body.email) {
-            const user: User = this.userDAO.getUserByEmail(req.body.email);
-            if (user && user.password === req.body.password) {
-                return new Promise((resolve, reject) => {
-                    req.session.user = user;
-                    req.session.save(() => res.redirect('/s/dashboard'));
-                }).then(() => res.redirect('/s/dashboard'));
-            }
-        }        
+
+            return this.userDAO.getUserByEmail(req.body.email)
+                .pipe(
+                    switchMap(user => {
+                        if (user && user.password === req.body.password) {
+                            req.session.user = user;
+                            return SessionUtils.saveSession(req.session);
+                        }
+                        return of(false);
+                    })
+                ).toPromise()
+                .then(isSuccess => {
+                    if (isSuccess) {
+                        res.redirect('/s/dashboard')
+                    } else {
+                        res.redirect('/s');
+                    }
+                });
+        }
         res.redirect('/s');
     }
 

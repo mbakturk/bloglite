@@ -1,20 +1,25 @@
-import { PostController } from './controller/post.controller';
-import { EditorController } from './controller/editor.controller';
-import { controller } from 'inversify-express-utils';
+import { Container } from "inversify";
+import { MarkdownIt } from "markdown-it";
+import { Config, fetchServerConfig } from './config-reader';
 import { DashboardController } from './controller/dashboard.controller';
+import { EditorController } from './controller/editor.controller';
 import { LoginController } from './controller/login.controller';
+import { PostController } from './controller/post.controller';
+import { Database } from "./database";
+import { LoggerCreator, SysLogger } from './logger';
 import { PostDAO } from './repo/post.dao';
 import { UserDAO } from './repo/user.dao';
-import { Container } from "inversify";
-import * as Database from "better-sqlite3";
-import { MarkdownIt } from "markdown-it";
 import markdownit = require("markdown-it");
 import hljs = require("highlight.js");
 import markdownItEmoji = require("markdown-it-emoji")
 import twemoji = require("twemoji");
 
 const container = new Container();
-container.bind<Database>(Database).toConstantValue(new Database("blog.db3", { fileMustExist: true }));
+container.bind<Config>("Config").toConstantValue(fetchServerConfig());
+container.bind<SysLogger>("Logger").toConstantValue(LoggerCreator(container));
+
+container.bind<Database>(Database).toSelf().inSingletonScope();
+
 container.bind<UserDAO>(UserDAO).toSelf().inSingletonScope();
 container.bind<PostDAO>(PostDAO).toSelf().inSingletonScope();
 container.bind<LoginController>(LoginController).toSelf();
@@ -46,3 +51,4 @@ container.bind<MarkdownIt>(markdownit).toConstantValue(md);
 
 
 export { container };
+
