@@ -63,4 +63,15 @@ export class PostDAO {
             }));
     }
 
+    public isPermalinkExist(permalink: string): Observable<boolean> {
+        return this.db.query('SELECT permalink FROM t_post WHERE permalink = ?', [permalink])
+        .pipe(map(row => {
+            if(row) {
+                return true;
+            } else {
+                return false;
+            }
+        }))
+    }
+
 }

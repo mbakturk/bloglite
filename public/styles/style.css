@@ -48,6 +48,9 @@
 .page-num-button {
   width: 100px; }
 
+.editor-page .permalink-input {
+  font-size: 0.75rem; }
+
 .editor-page .row {
   margin-bottom: 1rem; }
 

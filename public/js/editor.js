@@ -50,7 +50,8 @@ require(["jquery", "markdownIt", "highlight", "markdownItEmoji", "bootstrap"],
             var post = {
                 id: postId,
                 title: $("#title").val(),
-                entry: $("#entry").val()
+                entry: $("#entry").val(),
+                permalink: $("#permalink").val()
             }
 
             $.post(post.id === -1 ? "/s/createPost" : "/s/updatePost", post)
@@ -65,6 +66,12 @@ require(["jquery", "markdownIt", "highlight", "markdownItEmoji", "bootstrap"],
                     );
                 })
 
+        };
+
+        window.editor.setPermalink = function(text) {
+            return $.post('/s/getPermalink', { permalink: text }).done(function (resp) {
+                $("#permalink").val(resp.permalink);
+            })
         }
 
     });

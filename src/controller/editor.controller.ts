@@ -6,6 +6,8 @@ import { inject } from "inversify";
 import { Request, Response } from "express";
 import { Post } from '../repo/entity/post';
 import { map } from 'rxjs/operators';
+import { CommonUtils } from '../utils';
+import { Observable } from 'rxjs';
 
 @controller("/s")
 export class EditorController implements interfaces.Controller {
@@ -42,7 +44,7 @@ export class EditorController implements interfaces.Controller {
         const resp: BaseResp = { retCode: -1 };
         const post: Post = req.body;
         if (post) {
-            return this.postDAO.createPost(post.title, Math.random() + "", post.entry, req.session.user.id)
+            return this.postDAO.createPost(post.title, post.permalink, post.entry, req.session.user.id)
                 .toPromise()
                 .then(r => {
                     resp.retCode = 0;
@@ -67,5 +69,48 @@ export class EditorController implements interfaces.Controller {
         }
         res.json(resp);
     }
+
+    @httpPost("/getPermalink")
+    private getPermalink(req: Request, res: Response) {
+        let permalink = req.body.permalink || '';
+        if (permalink) {
+            permalink = CommonUtils.generatePermalink(permalink);
+            let counter = 0, suffix = '';
+            return Observable.create(observer => {
+                const checkPermalink = (p) => {
+                    p += suffix;
+                    this.postDAO.isPermalinkExist(p)
+                    .subscribe(r => {
+                        if(r) {
+                            suffix += '-' + (counter++);
+                            checkPermalink(permalink);
+                        } else {
+                            observer.next(permalink);
+                            observer.complete();
+                        }
+                    }, e => {
+                        observer.error(e);
+                        observer.complete();
+                    })
+                }
+                checkPermalink(permalink);
+            }).toPromise()
+                .then(r => res.json({
+                    retCode: 0,
+                    retMsg: 'Success',                    
+                    permalink
+                })).catch(err => res.json({
+                    retCode: 1,
+                    retMsg: 'Generating permalink error'
+                }))
+        }
+
+        return res.json({
+            retCode: -1,
+            retMsg: 'Input error'
+        })
+    }
+
+
 
 }

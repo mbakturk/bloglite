@@ -14,8 +14,12 @@ html
                     h1.mt-3.mb-3 Editor
             .row
                 .col
-                    input#title.form-control(type="text" placeholder="Title" value= post ? post.title : '')
-            .row.justify-content-end
+                    input#title.form-control(type="text" placeholder="Title" onchange="editor.setPermalink(this.value)" value= post ? post.title : '')
+            .row.justify-content-between.editor-row
+                .input-group.w-75.col-auto
+                    .input-group-prepend
+                        .input-group-text Permalink
+                    input#permalink.form-control.permalink-input(aria-label="Permalink" onchange="editor.setPermalink(this.value)" value= post ? post.permalink : '')
                 #mode-tab.btn-group.col-auto.nav
                     a.btn.btn-primary.active(href="#nav-markdown") Markdown
                     a.btn.btn-primary(href="#nav-visual" onclick="visual()") Visual
