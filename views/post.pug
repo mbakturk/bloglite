@@ -3,18 +3,12 @@ html
     head
         +stylesheets
     body
-        .container-fluid
-            .row.border-bottom
-                .container
-                    .row
-                        .col-auto 
-                            a.brand-text(href="/"): h3.mt-3.mb-3 BlogLite
-            .row
-                .container.mt-4
-                    .row
-                        .col-12
-                            .row.mt-4: .col
-                                h1.post-title= post.title
-                                p.post-meta.pb-3.border-bottom= post.postDate
-                                div!= post.entry                    
+        include utils/header.pug
+        .container-fluid.mt-4.h-100
+            .container
+                .row: .col
+                    h1.post-title= post.title
+                    p.post-meta.pb-3.border-bottom= post.postDate
+                    div!= post.entry
+        include utils/footer.pug                 
         +javascriptLibs

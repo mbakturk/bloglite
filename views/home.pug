@@ -3,21 +3,15 @@ html
     head
         +stylesheets
     body
-        .container-fluid
-            .row.border-bottom
-                .container
-                    .row
-                        .col-11 
-                            a.brand-text(href="/"): h3.mt-3.mb-3 mbakturk.com
-            .row
-                .container.mt-4
-                    .row
-                        .col-12
-                            each post in postList
-                                .row.mt-4: .col
-                                    a.post-title(href=`/p/${post.permalink}`): h1= post.title
-                                    p.post-meta.pb-3.border-bottom= post.postDate
-                                    div!= post.entry
+        include utils/header.pug
+        .container-fluid.mt-4.h-100
+            .container
+                each post in postList
+                    .row: .col
+                                a.post-title(href=`/p/${post.permalink}`): h1= post.title
+                                p.post-meta.pb-3.border-bottom= post.postDate
+                                div!= post.entry
+                if totalPage > 1           
                     .row.justify-content-center
                         if pageNum > 1
                             a.btn.btn-secondary.btn-sm.page-num-button(href=`/?page=${pageNum-1}`) Önceki

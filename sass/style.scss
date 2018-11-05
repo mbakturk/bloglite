@@ -1,5 +1,24 @@
+@font-face {
+    font-family: 'roboto';
+    src: url('/fonts/Roboto-Light.ttf');
+}
+
+@font-face {
+    font-family: 'roboto-italic';
+    src: url('/fonts/Roboto-LightItalic.ttf');
+}
+
+$enable-shadows: 'true';
+$font-family-base: 'roboto';
+$spacer: 0.5em;
+
+$link-color: #000000;
+
 @import "common";
 @import "login";
 @import "dashboard";
 @import "editor";
 @import "node_modules/bootstrap/scss/bootstrap";
+@import "header";
+
+

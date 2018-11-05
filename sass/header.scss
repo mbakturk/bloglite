@@ -1,0 +1,57 @@
+.blog-header{
+    
+    img {
+        width: 92px;
+    }
+
+    .blog-header-right {
+        padding-left: 1rem;            
+    }
+
+    .blog-header-titles{
+        margin-top: 0.75rem;
+
+        h3 {
+            font-weight: bold;
+        }
+    }
+
+    .blog-header-links{
+        text-align: right;
+    }
+
+    @include media-breakpoint-down(md) { 
+        .blog-header-links{
+            text-align: left;
+        }
+
+        .blog-header-titles{
+            margin-top: 0.25rem;
+        }
+     }
+
+
+    @include media-breakpoint-down(sm) {
+        img {
+            width: 70px;
+        }
+
+        .blog-header-right {
+            padding-left: 0.5rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+
+        h8 {
+            font-size: 0.75rem;
+        }      
+    }
+
+    @include media-breakpoint-down(xs) { 
+        h3 {
+            font-size: 1.25rem;
+        }
+    }
+}
