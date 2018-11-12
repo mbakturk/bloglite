@@ -17,7 +17,7 @@ export class PostDAO {
 
     public getPostLiteList(count: number, offset: number): Observable<Post[]> {
         return this.db.queryAll(`SELECT p.id, p.title, p.permalink, p.post_date as postDate, u.name as authorName 
-        FROM t_post as p LEFT JOIN t_user u ON p.author == u.id LIMIT ? OFFSET ?`, [count, offset]);
+        FROM t_post as p LEFT JOIN t_user u ON p.author == u.id ORDER BY p.post_date DESC LIMIT ? OFFSET ?`, [count, offset]);
     }
     
     public createPost(title: string, permalink: string, entry: string, authorId: number): Observable<number> {
@@ -32,16 +32,19 @@ export class PostDAO {
     public updatePost(post: Post): Observable<any> {
         const updateables = ["title", "permalink", "entry"];
         let updates = [];
+        const values = [];
 
         updateables.forEach(property => {
-            if (post[property]) {
-                updates.push(`${property} = "${post[property]}"`);
+            const value = post[property];
+            if (value) {
+                updates.push(`${property} = ?`);
+                values.push(value);
             }
         });
 
-        return this.db.run(
-            `UPDATE t_post SET ${updates.join(",")} WHERE id = ?`, [post.id]
-        );
+        values.push(post.id);        
+
+        return this.db.run(`UPDATE t_post SET ${updates.join(",")} WHERE id = ?`, values);
     }
 
     public getPostByPermalink(permalink: string): Observable<Post> {

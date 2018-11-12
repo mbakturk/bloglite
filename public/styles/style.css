@@ -6441,3 +6441,6 @@ a.text-dark:hover, a.text-dark:focus {
 @media (max-width: 575.98px) {
   .blog-header h3 {
     font-size: 1.25rem; } }
+
+.mt-6 {
+  margin-top: 2em !important; }

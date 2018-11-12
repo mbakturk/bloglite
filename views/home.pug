@@ -4,11 +4,11 @@ html
         +stylesheets
     body
         include utils/header.pug
-        .container-fluid.mt-4
+        .container-fluid.mt-6
             .container
                 each post in postList
                     .row: .col
-                                a.post-title(href=`/p/${post.permalink}`): h1= post.title
+                                a.post-title(href=`/p/${post.permalink}`): h2= post.title
                                 p.post-meta.pb-3.border-bottom= post.postDate
                                 div!= post.entry
                 if totalPage > 1           

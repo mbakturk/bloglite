@@ -21,4 +21,8 @@ $link-color: #000000;
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "header";
 
+.mt-6 {
+    margin-top: ($spacer * 4) !important;
+}
+
 
