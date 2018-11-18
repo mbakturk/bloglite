@@ -6,7 +6,6 @@ import "reflect-metadata";
 import { interfaces, controller, httpGet, requestParam, response, queryParam } from "inversify-express-utils";
 import { inject } from "inversify";
 import * as express from "express";
-import markdownit = require('markdown-it');
 import { zip } from 'rxjs';
 
 
@@ -14,7 +13,7 @@ import { zip } from 'rxjs';
 export class PostController implements interfaces.Controller {
 
     @inject(PostDAO) private postDAO: PostDAO;
-    @inject(markdownit) private md: MarkdownIt;
+    @inject('MarkdownIt') private md: MarkdownIt;
     private PAGE_SIZE: number = 10;
 
     @httpGet("/")

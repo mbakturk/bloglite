@@ -40,14 +40,23 @@ const md: MarkdownIt = new markdownit({
         }
 
         return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
-    }
-}).use(markdownItEmoji);
+    },
+    html: true,
+    linkify: true,
+    typographer: true
+}).use(markdownItEmoji).use(
+    require('markdown-it-video'), { // <-- this use(package_name) is required
+        youtube: { width: 640, height: 390 },
+        vimeo: { width: 500, height: 281 },
+        vine: { width: 600, height: 600, embed: 'simple' },
+        prezi: { width: 550, height: 400 }
+    });
 
 md.renderer.rules.emoji = function (token, idx) {
     return twemoji.parse(token[idx].content);
 };
 
-container.bind<MarkdownIt>(markdownit).toConstantValue(md);
+container.bind<MarkdownIt>('MarkdownIt').toConstantValue(md);
 
 
 export { container };

@@ -32,7 +32,6 @@ export class Database {
     }
 
     private _query(method: string, queryString: string, values?: Array<any>): Observable<any> {
-
         return Observable.create(observer => {
             this.db[method](queryString, values, (err, data?) => {
                 if (err) {

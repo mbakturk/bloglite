@@ -2,10 +2,6 @@ require.config({
     paths: {
         jquery: "//code.jquery.com/jquery-3.2.1.min",
         bootstrap: "//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min",
-        markdownIt: "//cdnjs.cloudflare.com/ajax/libs/markdown-it/8.4.1/markdown-it",
-        highlight: "//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min",
-        //twemoji: "//cdnjs.cloudflare.com/ajax/libs/twemoji/2.6.0/2/twemoji.min",
-        markdownItEmoji: "//cdnjs.cloudflare.com/ajax/libs/markdown-it-emoji/1.4.0/markdown-it-emoji.min"
     },
     shim: {
         "bootstrap": {
@@ -14,29 +10,14 @@ require.config({
     }
 });
 
-require(["jquery", "markdownIt", "highlight", "markdownItEmoji", "bootstrap"],
-    function ($, markdownIt, hljs, markdownItEmoji) {
-        // Actual default values
-        var md = markdownIt({
-            highlight: function (str, lang) {
-                if (lang && hljs.getLanguage(lang)) {
-                    try {
-                        return '<pre class="hljs"><code>' +
-                            hljs.highlight(lang, str, true).value +
-                            '</code></pre>';
-                    } catch (__) { }
-                }
-
-                return '<pre class="hljs"><code>' + md.utils.escapeHtml(str) + '</code></pre>';
-            }
-        }).use(markdownItEmoji);
-
-        md.renderer.rules.emoji = function (token, idx) {
-            return twemoji.parse(token[idx].content);
-        };
-
+require(["jquery", "bootstrap"],
+    function ($) {
+    
         window.visual = function () {
-            $("#nav-visual").html(md.render($("#entry").val()));
+            $.post("/s/convertToHTML", {entry: $("#entry").val()})
+            .done(function(resp) {
+                $("#nav-visual").html(resp.entry);
+            });
         }
 
         $("#mode-tab a").on("click", function (e) {
