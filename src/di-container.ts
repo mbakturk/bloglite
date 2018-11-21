@@ -1,6 +1,6 @@
 import { Container } from "inversify";
 import { MarkdownIt } from "markdown-it";
-import { Config, fetchServerConfig } from './config-reader';
+import { Config, config } from './config-reader';
 import { DashboardController } from './controller/dashboard.controller';
 import { EditorController } from './controller/editor.controller';
 import { LoginController } from './controller/login.controller';
@@ -15,7 +15,7 @@ import markdownItEmoji = require("markdown-it-emoji")
 import twemoji = require("twemoji");
 
 const container = new Container();
-container.bind<Config>("Config").toConstantValue(fetchServerConfig());
+container.bind<Config>("Config").toConstantValue(config);
 container.bind<SysLogger>("Logger").toConstantValue(LoggerCreator(container));
 
 container.bind<Database>(Database).toSelf().inSingletonScope();

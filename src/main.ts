@@ -2,28 +2,25 @@ import { container } from "./di-container";
 import { InversifyExpressServer } from "inversify-express-utils";
 import * as bodyParser from "body-parser";
 import * as path from "path";
+import * as fs from "fs";
 import * as express from "express";
 import * as session from "express-session";
+import { SysLogger, LoggerCreator } from "./logger";
 import { Config } from "./config-reader";
-import { SysLogger } from "./logger";
+import { SecurityUtils } from "./utils";
 
 const SessionStore = require('connect-sqlite3')(session);
 const config: Config = container.get('Config');
 const logger: SysLogger = container.get('Logger');
 
-function checkAuth (req, res, next) {
-	logger.debug('checkAuth ' + req.url);
-
-	// don't serve /secure to those not logged in
-	// you should add to this list, for each and every secure url
-	if (req.url.indexOf("/s/") === 0 && (!req.session || !req.session.user)) {
-		res.redirect("/s");
-		return;
-	}
-
-	next();
-}
-
+// create necessary directories
+[
+    path.join(process.cwd(), config.log.path)
+].forEach(dir => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
+});
 
 // create server
 let server = new InversifyExpressServer(container);
@@ -42,11 +39,13 @@ server.setConfig((app) => {
     
     app.use(session({
         store: new SessionStore({db: config.database.path, table: 't_sessions'}),
-        secret: 'keyboard cat',
+        secret: config.sessionScreet,
+        resave: true,
+        saveUninitialized: false,
         cookie: {maxAge: 7 * 24 * 60 * 60 * 1000 } // 1 week
     }));
 
-    app.use(checkAuth);
+    app.use(SecurityUtils.checkReqAuth);
 });
 
 let app = server.build();

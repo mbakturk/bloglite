@@ -2,12 +2,16 @@
     "server": {
         "port": 3000
     },
+    
+    "sessionScreet" : "sessionScreet",
+
     "database": {
         "path": "blog.db3"
     },
     "log": {
         "level": "debug",
-        "path": "../logs/",
-        "silent": false
-    }
+        "path": "./logs/"
+    },
+
+    "timezone": "Europe/Istanbul"
 }
