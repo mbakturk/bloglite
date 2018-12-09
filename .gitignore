@@ -2,7 +2,7 @@ node_modules/
 dist/
 sessions/
 logs/
-
+public/pics
 
 package-lock.json
 
