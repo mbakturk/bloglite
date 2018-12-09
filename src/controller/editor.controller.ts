@@ -6,11 +6,11 @@ import { inject } from "inversify";
 import { Request, Response } from "express";
 import { Post } from '../repo/entity/post';
 import { map } from 'rxjs/operators';
-import { CommonUtils } from '../utils';
+import { CommonUtils, SecurityUtils } from '../utils';
 import { Observable } from 'rxjs';
 import { MarkdownIt } from 'markdown-it';
 
-@controller("/s")
+@controller(SecurityUtils.securityPath)
 export class EditorController implements interfaces.Controller {
 
     @inject(PostDAO) private postDAO: PostDAO;

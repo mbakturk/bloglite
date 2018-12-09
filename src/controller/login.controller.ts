@@ -7,8 +7,9 @@ import { inject } from "inversify";
 import { Request, Response, NextFunction } from "express";
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { SecurityUtils } from '../utils';
 
-@controller("/s")
+@controller(SecurityUtils.securityPath)
 export class LoginController implements interfaces.Controller {
 
     @inject(UserDAO) private userDAO: UserDAO;
@@ -16,7 +17,7 @@ export class LoginController implements interfaces.Controller {
     @httpGet("/")
     private loginPage(req: Request, res: Response, next: NextFunction) {
         if (req.session.user) {
-            res.redirect("/s/dashboard")
+            res.redirect(SecurityUtils.securityPath + "/dashboard")
             return;
         }
         res.render("login");
@@ -39,13 +40,13 @@ export class LoginController implements interfaces.Controller {
                 ).toPromise()
                 .then(isSuccess => {
                     if (isSuccess) {
-                        res.redirect('/s/dashboard')
+                        res.redirect(SecurityUtils.securityPath + "/dashboard")
                     } else {
-                        res.redirect('/s');
+                        res.redirect(SecurityUtils.securityPath);
                     }
                 });
         }
-        res.redirect('/s');
+        res.redirect(SecurityUtils.securityPath);
     }
 
 

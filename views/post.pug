@@ -1,7 +1,7 @@
 include mixins.pug
 html
     head
-        +stylesheets
+        +htmlHeader(post.title)
     body
         include utils/header.pug
         .container-fluid.mt-5

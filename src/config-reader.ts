@@ -1,6 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
-import { DateUtils } from "./utils";
+import { DateUtils, SecurityUtils } from "./utils";
 
 export interface Config {
     server: {
@@ -20,6 +20,8 @@ export interface Config {
     };
 
     timezone: string;
+
+    securityPath: string;
 }
 
 
@@ -30,6 +32,7 @@ const fetchServerConfig = (): Config => {
     
     // Utils settings
     DateUtils.timezone = config.timezone;    
+    SecurityUtils.securityPath = "/" + config.securityPath;
     return config;
 };
 

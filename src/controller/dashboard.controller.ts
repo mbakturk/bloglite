@@ -8,8 +8,9 @@ import * as session from "express-session";
 import * as express from "express";
 import { Post } from '../repo/entity/post';
 import { switchMap, map } from 'rxjs/operators';
+import { SecurityUtils } from '../utils';
 
-@controller("/s")
+@controller(SecurityUtils.securityPath)
 export class DashboardController implements interfaces.Controller {
 
     @inject(PostDAO) private postDAO: PostDAO;

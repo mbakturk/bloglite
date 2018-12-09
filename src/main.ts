@@ -50,3 +50,4 @@ server.setConfig((app) => {
 
 let app = server.build();
 app.listen(config.server.port);
+console.info("Bloglite is running!");

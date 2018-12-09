@@ -13,5 +13,7 @@
         "path": "./logs/"
     },
 
-    "timezone": "Europe/Istanbul"
+    "timezone": "Europe/Istanbul",
+
+    "securityPath": "securityPath"
 }

@@ -11,10 +11,9 @@ require.config({
 });
 
 require(["jquery", "bootstrap"],
-    function ($) {
-    
+    function ($) {    
         window.visual = function () {
-            $.post("/s/convertToHTML", {entry: $("#entry").val()})
+            $.post(securityPath +"convertToHTML", {entry: $("#entry").val()})
             .done(function(resp) {
                 $("#nav-visual").html(resp.entry);
             });
@@ -35,7 +34,7 @@ require(["jquery", "bootstrap"],
                 permalink: $("#permalink").val()
             }
 
-            $.post(post.id === -1 ? "/s/createPost" : "/s/updatePost", post)
+            $.post(post.id === -1 ? securityPath +"createPost" : securityPath +"updatePost", post)
                 .done(function () {
                     $("#alert-container").append(
                         `<div class="alert alert-warning alert-dismissible fade show col" role="alert">
@@ -49,8 +48,8 @@ require(["jquery", "bootstrap"],
 
         };
 
-        window.editor.setPermalink = function(text) {
-            return $.post('/s/getPermalink', { permalink: text }).done(function (resp) {
+        window.editor.setPermalink = function (text) {
+            return $.post(securityPath + "getPermalink", { permalink: text }).done(function (resp) {
                 $("#permalink").val(resp.permalink);
             })
         }
