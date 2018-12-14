@@ -1,0 +1,12 @@
+include mixins.pug
+html
+    head
+        +htmlHeader("Sayfa bulunamadı")
+    body
+        include utils/header.pug
+        .container-fluid.mt-5
+            .container
+                .row: .col
+                    h2.post-title= "Sayfa bulunamadı"
+                    div!= "Üzgünüm, ulaşmaya çalıştığınız sayfa bulunamadı."
+        include utils/footer.pug                 

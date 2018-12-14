@@ -1,3 +1,4 @@
+import { Error404 } from './../common/error/error-404';
 import { map } from 'rxjs/operators';
 import { MarkdownIt } from 'markdown-it';
 import { PostDAO } from './../repo/post.dao';
@@ -45,12 +46,21 @@ export class PostController implements interfaces.Controller {
         return this.postDAO.getPostByPermalink(permalink)
             .pipe(
                 map(post => {
-                    post.entry = this.md.render(post.entry);
-                    return post;
+                    if (post) {
+                        post.entry = this.md.render(post.entry);
+                        return post;
+                    }
+                    throw new Error404("Page not found")
                 })
             ).toPromise()
             .then(post => {
                 res.render("post", { post });
+            })
+            .catch(err => {
+                if (err instanceof Error404) {
+                    res.status(404);
+                    res.render("404");
+                }
             })
     }
 

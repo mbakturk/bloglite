@@ -1,3 +1,4 @@
+import { RequestHandlerUtils } from './utils/request-handler.utils';
 import { container } from "./di-container";
 import { InversifyExpressServer } from "inversify-express-utils";
 import * as bodyParser from "body-parser";
@@ -46,8 +47,14 @@ server.setConfig((app) => {
     }));
 
     app.use(SecurityUtils.checkReqAuth);
+
+   
 });
 
+
+
 let app = server.build();
+app.use(RequestHandlerUtils.handle404);
+app.use(RequestHandlerUtils.handle500);
 app.listen(config.server.port);
 console.info("Bloglite is running!");
