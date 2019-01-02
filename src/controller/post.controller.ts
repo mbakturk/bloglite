@@ -6,7 +6,7 @@ import { PostDAO } from './../repo/post.dao';
 import "reflect-metadata";
 import { interfaces, controller, httpGet, requestParam, response, queryParam } from "inversify-express-utils";
 import { inject } from "inversify";
-import * as express from "express";
+import { Response, Request } from 'express';
 import { zip } from 'rxjs';
 
 
@@ -18,7 +18,7 @@ export class PostController implements interfaces.Controller {
     private PAGE_SIZE: number = 10;
 
     @httpGet("/")
-    private homePage(@queryParam("page") page: string, @response() res: express.Response) {
+    private homePage(@queryParam("page") page: string, @response() res: Response) {
         let mPage: number = 0;
 
         if (page) {
@@ -42,7 +42,7 @@ export class PostController implements interfaces.Controller {
     }
 
     @httpGet("p/:permalink")
-    private postPage(@requestParam("permalink") permalink: string, @response() res: express.Response) {
+    private postPage(@requestParam("permalink") permalink: string, @response() res: Response) {
         return this.postDAO.getPostByPermalink(permalink)
             .pipe(
                 map(post => {

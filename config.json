@@ -1,4 +1,6 @@
 {
+    "baseUrl": "http://mbakturk.com",
+    
     "server": {
         "port": 3000
     },

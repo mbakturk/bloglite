@@ -40,6 +40,7 @@
   "devDependencies": {
     "@types/winston": "^2.4.4",
     "node-sass": "^4.9.4",
+    "rss": "^1.2.2",
     "typescript": "^2.8.1"
   }
 }

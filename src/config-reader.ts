@@ -3,6 +3,9 @@ import * as fs from "fs";
 import { DateUtils, SecurityUtils } from "./utils";
 
 export interface Config {
+
+    baseUrl: string;
+
     server: {
         port: number
     };
