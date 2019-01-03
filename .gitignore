@@ -4,6 +4,9 @@ sessions/
 logs/
 public/pics
 
+package
+
 package-lock.json
 
 *.db3
+*.zip
