@@ -28,7 +28,6 @@ export class RSSController implements interfaces.Controller {
             postList.forEach(post => {
                 feed.item({
                     title: post.title,
-                    description: post.entry,
                     url: `${this.config.baseUrl}/p/${post.permalink}`,
                     date: post.postDate
                 })
