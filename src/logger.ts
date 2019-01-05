@@ -43,7 +43,8 @@ const LoggerCreator = (container): SysLogger => {
         format: logFormat,
         transports: [
             errorTransport,
-            combinedTransport
+            combinedTransport,
+            new transports.Console({ level: "info"})
         ]
     }) as SysLogger;
 
