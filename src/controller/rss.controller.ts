@@ -23,21 +23,26 @@ export class RSSController implements interfaces.Controller {
         });
 
         return this.postDAO.getPostList(100, 0).toPromise()
-        .then(postList => {
+            .then(postList => {
 
-            postList.forEach(post => {
-                feed.item({
-                    title: post.title,
-                    url: `${this.config.baseUrl}/p/${post.permalink}`,
-                    date: post.postDate
+                postList.forEach(post => {
+                    feed.item({
+                        title: post.title,
+                        description: this.generateRSSDescription(post.entry),
+                        url: `${this.config.baseUrl}/p/${post.permalink}`,
+                        date: post.postDate
+                    })
                 })
-            })
 
-            res.set('Content-Type', 'text/xml');
-            res.send(feed.xml({ indent: true }));    
-        });
+                res.set('Content-Type', 'text/xml');
+                res.send(feed.xml({ indent: true }));
+            });
 
-        
-    }    
+
+    }
+
+    private generateRSSDescription(text: string): string {
+        return text ? text.substr(0, 250).trim() + '...' : '';
+    }
 
 }
