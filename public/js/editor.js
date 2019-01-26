@@ -11,26 +11,14 @@ require.config({
 });
 
 require(["jquery", "bootstrap"],
-    function ($) {    
-        window.visual = function () {
-            $.post(securityPath +"convertToHTML", {entry: $("#entry").val()})
-            .done(function(resp) {
-                $("#nav-visual").html(resp.entry);
-            });
-        }
-
-        $("#mode-tab a").on("click", function (e) {
-            e.preventDefault()
-            $(this).tab("show")
-        })
-
+    function ($) {
         window.editor = {};
 
         window.editor.publish = function (postId) {
             var post = {
                 id: postId,
                 title: $("#title").val(),
-                entry: $("#entry").val(),
+                entry: quill.root.innerHTML,
                 permalink: $("#permalink").val()
             }
 
