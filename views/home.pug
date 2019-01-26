@@ -10,7 +10,8 @@ html
                     .row: .col
                                 a.post-title(href=`/p/${post.permalink}`): h2= post.title
                                 p.post-meta.pb-3.border-bottom= post.postDate
-                                div.ql-snow!= post.entry
+                                div.ql-snow
+                                    div.ql-editor.post-normalize!= post.entry
                 if totalPage > 1           
                     .row.justify-content-center
                         if pageNum > 1
