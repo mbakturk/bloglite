@@ -3,6 +3,7 @@ dist/
 sessions/
 logs/
 public/pics
+public/styles
 
 package
 
