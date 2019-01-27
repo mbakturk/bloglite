@@ -29,3 +29,14 @@
 .post-normalize {
      height: auto !important;
  }
+
+ .ql-editor {
+     iframe {
+        max-width:640px !important;
+        max-height: 360px !important;
+        width: 100%;
+        height: 100%;
+        margin: auto;
+        display: block;
+     }
+ }

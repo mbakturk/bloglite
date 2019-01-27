@@ -30,7 +30,8 @@ server.setConfig((app) => {
 
     // add body parser
     app.use(bodyParser.urlencoded({
-        extended: true
+        extended: true,
+        limit: '50mb'
     }));
 
     app.use(bodyParser.json());

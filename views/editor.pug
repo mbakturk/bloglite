@@ -4,11 +4,8 @@ html
     head    
         link(href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet")
         link(rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/default.min.css")
-        script(src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js")
-        script(src="//twemoji.maxcdn.com/2/twemoji.min.js?2.6")        
+        script(src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js")  
         script(src="https://cdn.quilljs.com/1.3.6/quill.js")
-        script(src="/js/image-resize.min.js")
-        script(src="/js/video-resize.min.js")
         script(data-main="js/editor.js" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js")
         +htmlHeader("Editor")
         style.
@@ -59,9 +56,7 @@ html
         var quill = new Quill('#editor', {
             modules: {
                 syntax: true,
-                toolbar: toolbarOptions,
-                imageResize: {},
-                videoResize: {}
+                toolbar: toolbarOptions
             },
             theme: 'snow'
         });
