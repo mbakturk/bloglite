@@ -9,7 +9,8 @@ html
                 .row: .col
                     h2.post-title= post.title
                     p.post-meta.pb-3.border-bottom= post.postDate
-                    div!= post.entry
+                    div.ql-snow
+                        div.ql-editor.post-normalize!= post.entry
                 .row: .col
                     div(id="disqus_thread")
         include utils/footer.pug                 
