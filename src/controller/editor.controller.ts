@@ -8,13 +8,11 @@ import { Post } from '../repo/entity/post';
 import { map } from 'rxjs/operators';
 import { CommonUtils, SecurityUtils } from '../utils';
 import { Observable } from 'rxjs';
-import { MarkdownIt } from 'markdown-it';
 
 @controller(SecurityUtils.securityPath)
 export class EditorController implements interfaces.Controller {
 
     @inject(PostDAO) private postDAO: PostDAO;
-    @inject('MarkdownIt') private md: MarkdownIt;
 
     @httpGet("/editor")
     private editorPage(@queryParam("post") postId: string, @response() res:Response) {
@@ -112,16 +110,4 @@ export class EditorController implements interfaces.Controller {
             retMsg: 'Input error'
         })
     }
-
-    @httpPost("/convertToHTML")
-    private convertToHTML(req: Request, res: Response) {
-        const entry = this.md.render(req.body.entry);
-        res.json({
-            retCode: 0,
-            retMsg: 'Success',
-            entry
-        });
-    }
-
-
 }

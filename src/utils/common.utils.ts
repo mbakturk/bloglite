@@ -2,7 +2,7 @@ export class CommonUtils {
 
     public static generatePermalink(text: string): string {
         const specialCharDictionary = {'ş':'s', 'ı':'i','ğ':'g','ö':'o','ç':'c','ü':'u'};
-        let permalink = text;
+        let permalink = text.toLocaleLowerCase();
         
         Object.keys(specialCharDictionary).forEach((key) => {
             permalink = CommonUtils.replaceAll(permalink, key, specialCharDictionary[key]);
@@ -13,7 +13,6 @@ export class CommonUtils {
         .replace(/\W/g, ' ')
         // replace more then 1 space with only one
         .replace(/\s+/g, ' ')
-        .toLocaleLowerCase()
         .trim()
         .replace(/\s+/g, '-');     
 

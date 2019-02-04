@@ -1,6 +1,5 @@
 import { Error404 } from './../common/error/error-404';
 import { map } from 'rxjs/operators';
-import { MarkdownIt } from 'markdown-it';
 import { PostDAO } from './../repo/post.dao';
 
 import "reflect-metadata";
@@ -14,7 +13,6 @@ import { zip } from 'rxjs';
 export class PostController implements interfaces.Controller {
 
     @inject(PostDAO) private postDAO: PostDAO;
-    @inject('MarkdownIt') private md: MarkdownIt;
     private PAGE_SIZE: number = 10;
 
     @httpGet("/")
@@ -27,10 +25,7 @@ export class PostController implements interfaces.Controller {
         return zip(this.postDAO.getPostList(this.PAGE_SIZE, this.PAGE_SIZE * mPage), this.postDAO.getPostCount())
             .pipe(
                 map(d => ({
-                    postList: d[0].map(post => {
-                        post.entry = this.md.render(post.entry)
-                        return post;
-                    }),
+                    postList: d[0],
                     totalPage: Math.ceil(d[1] / this.PAGE_SIZE)
                 }))
             ).toPromise()
@@ -47,7 +42,6 @@ export class PostController implements interfaces.Controller {
             .pipe(
                 map(post => {
                     if (post) {
-                        post.entry = this.md.render(post.entry);
                         return post;
                     }
                     throw new Error404("Page not found")

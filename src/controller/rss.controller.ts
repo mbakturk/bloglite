@@ -42,7 +42,7 @@ export class RSSController implements interfaces.Controller {
     }
 
     private generateRSSDescription(text: string): string {
-        return text ? text.substr(0, 250).trim() + '...' : '';
+        return text ? text.replace(/<\/?[^>]+(>|$)/g, " ").substr(0, 250).trim() + '...' : '';
     }
 
 }
