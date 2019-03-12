@@ -23,12 +23,12 @@
     "morgan": "^1.9.0",
     "pug": "^2.0.3",
     "reflect-metadata": "^0.1.12",
+    "rss": "^1.2.2",
     "rxjs": "^6.3.2",
     "session-file-store": "^1.2.0",
     "sqlite3": "^4.0.2",
     "winston": "^3.1.0",
-    "winston-daily-rotate-file": "^3.5.1",
-    "rss": "^1.2.2"
+    "winston-daily-rotate-file": "^3.5.1"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^3.1.3",

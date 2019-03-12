@@ -1,6 +1,6 @@
-var securityPath = location.pathname.split('/')[1];
-securityPath = "/" + securityPath + "/";
+var securePath = location.pathname.split('/')[1];
+securePath = "/" + securePath + "/";
 
 function redirect(href) {
-    location.href = securityPath + href;
+    location.href = securePath + href;
 }

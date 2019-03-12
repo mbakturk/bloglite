@@ -36,7 +36,7 @@ html
         +javascriptLibs
         script.
             function deletePost(postId){
-                $.post(securityPath + "deletePost",{id : postId}).done(function(){
+                $.post(securePath + "deletePost",{id : postId}).done(function(){
                     location.reload();
                 })
             }

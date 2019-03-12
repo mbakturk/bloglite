@@ -17,5 +17,5 @@
 
     "timezone": "Europe/Istanbul",
 
-    "securityPath": "securityPath"
+    "securePath": "securePath"
 }

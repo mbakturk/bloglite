@@ -10,7 +10,7 @@ import { Post } from '../repo/entity/post';
 import { switchMap, map } from 'rxjs/operators';
 import { SecurityUtils } from '../utils';
 
-@controller(SecurityUtils.securityPath)
+@controller(SecurityUtils.securePath)
 export class DashboardController implements interfaces.Controller {
 
     @inject(PostDAO) private postDAO: PostDAO;
@@ -24,7 +24,7 @@ export class DashboardController implements interfaces.Controller {
             mPage = +page - 1;
         }
 
-        return this.postDAO.getPostLiteList(this.PAGE_SIZE, this.PAGE_SIZE * mPage)
+        return this.postDAO.getLitePostList(this.PAGE_SIZE, this.PAGE_SIZE * mPage)
             .pipe(
                 switchMap(postList => this.postDAO.getPostCount()
                     .pipe(map(c => ({ totalPage: Math.ceil(c / this.PAGE_SIZE), postList })))

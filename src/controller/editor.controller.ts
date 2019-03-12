@@ -5,14 +5,15 @@ import { interfaces, controller, httpGet, httpPost, response, queryParam } from 
 import { inject } from "inversify";
 import { Request, Response } from "express";
 import { Post } from '../repo/entity/post';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { CommonUtils, SecurityUtils } from '../utils';
 import { Observable } from 'rxjs';
 
-@controller(SecurityUtils.securityPath)
+@controller(SecurityUtils.securePath)
 export class EditorController implements interfaces.Controller {
 
     @inject(PostDAO) private postDAO: PostDAO;
+    private PAGE_SIZE: number = 10;
 
     @httpGet("/editor")
     private editorPage(@queryParam("post") postId: string, @response() res:Response) {
@@ -109,5 +110,24 @@ export class EditorController implements interfaces.Controller {
             retCode: -1,
             retMsg: 'Input error'
         })
+    }
+
+    @httpPost("/getLitePostList")
+    private getLitePostList(req: Request, res: Response) {
+        let mPage: number = 0;
+        const page = req.body.page;
+        if (page) {
+            mPage = +page - 1;
+        }
+
+        return this.postDAO.getLitePostList(this.PAGE_SIZE, this.PAGE_SIZE * mPage)
+            .pipe(
+                switchMap(postList => this.postDAO.getPostCount()
+                    .pipe(map(c => ({ totalPage: Math.ceil(c / this.PAGE_SIZE), postList })))
+                )
+            ).toPromise()
+            .then(data => {
+                res.json(Object.assign(data, {retCode: 0 }));
+            });
     }
 }

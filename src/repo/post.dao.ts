@@ -15,7 +15,7 @@ export class PostDAO {
         FROM t_post as p LEFT JOIN t_user u ON p.author == u.id ORDER BY p.post_date DESC LIMIT ? OFFSET ?`, [count, offset]);
     }
 
-    public getPostLiteList(count: number, offset: number): Observable<Post[]> {
+    public getLitePostList(count: number, offset: number): Observable<Post[]> {
         return this.db.queryAll(`SELECT p.id, p.title, p.permalink, p.post_date as postDate, u.name as authorName 
         FROM t_post as p LEFT JOIN t_user u ON p.author == u.id ORDER BY p.post_date DESC LIMIT ? OFFSET ?`, [count, offset]);
     }
