@@ -1,0 +1,134 @@
+<template>
+  <div class="container editor-page">
+    <div class="row" id="alert-container">
+      <div v-if="postOK" class="alert alert-warning alert-dismissible fade show col" role="alert">
+        <strong>Congratulations!</strong> You published your post successfully.
+        <button
+          type="button"
+          class="close"
+          data-dismiss="alert"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <h1 class="mt-3 mb-3">Editor</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <input class="form-control" type="text" placeholder="Title" v-model.lazy="title">
+      </div>
+    </div>
+    <div class="row justify-content-between editor-row">
+      <div class="input-group col-auto">
+        <div class="input-group-prepend">
+          <div class="input-group-text">Permalink</div>
+        </div>
+        <input
+          class="form-control permalink-input"
+          aria-label="Permalink"
+          v-model="permalink"
+          @change="setPermalink($event.target.value)"
+        >
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div ref="editor" style="height:600px;"></div>
+      </div>
+    </div>
+    <div class="row justify-content-end">
+      <div class="col-auto">
+        <button class="btn btn-primary" type="button" @click="submit()">Publish</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import Vue from "vue";
+import $http from "../http-client";
+
+declare const Quill: any;
+
+export default Vue.extend({
+  data() {
+    return {
+      editor: null,
+      title: "",
+      permalink: "",
+      postOK: false,
+    };
+  },
+
+  mounted() {
+    var toolbarOptions = [
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      [{ size: ["small", false, "large", "huge"] }], // custom dropdown
+
+      ["bold", "italic", "underline", "strike"], // toggled buttons
+      [{ align: [] }],
+
+      [{ list: "ordered" }, { list: "bullet" }],
+      [{ script: "sub" }, { script: "super" }], // superscript/subscript
+      [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
+      [{ direction: "rtl" }], // text direction
+      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+      ["link", "image", "video"],
+      ["blockquote", "code-block"],
+      ["clean"], // remove formatting button
+    ];
+
+    this.editor = new Quill(this.$refs.editor, {
+      modules: {
+        syntax: true,
+        toolbar: toolbarOptions,
+      },
+      theme: "snow",
+    });
+  },
+
+  watch: {
+    title: function(val, oldVal) {
+      this.title = val.trim();
+      this.setPermalink(this.title);
+    },
+  },
+  methods: {
+    setPermalink(val: any) {
+      $http.post("getPermalink", { permalink: val }).then(resp => {
+        this.permalink = resp.data.permalink;
+      });
+    },
+
+    submit() {
+      var post = {
+        id: null,
+        title: this.title,
+        // @ts-ignore
+        entry: this.editor.root.innerHTML,
+        permalink: this.permalink,
+      };
+
+      $http
+        .post(!post.id ? "createPost" : "updatePost", post)
+        .then(() => (this.postOK = true));
+    },
+  },
+});
+</script>
+
+<style scoped lang="scss">
+.editor-page {
+  .permalink-input {
+    font-size: 0.75rem;
+  }
+  .row {
+    margin-bottom: 1rem;
+  }
+}
+</style>

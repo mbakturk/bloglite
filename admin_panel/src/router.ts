@@ -3,6 +3,7 @@ import Router from "vue-router";
 import Login from "./views/Login.vue";
 import Panel from "./views/Panel.vue";
 import Dashboard from "./views/Dashboard.vue";
+import Editor from "./views/Editor.vue";
 import store from "./store";
 
 Vue.use(Router);
@@ -28,6 +29,11 @@ const router = new Router({
           path: '',
           name: "dashboard",
           component: Dashboard
+        },
+        {
+          path: 'editor',
+          name: "editor",
+          component: Editor
         },
       ]
     },
