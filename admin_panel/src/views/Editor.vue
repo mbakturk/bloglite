@@ -20,7 +20,13 @@
     </div>
     <div class="row">
       <div class="col">
-        <input class="form-control" type="text" placeholder="Title" v-model.lazy="title">
+        <input
+          class="form-control"
+          type="text"
+          placeholder="Title"
+          v-model="title"
+          @change="setPermalink($event.target.value)"
+        >
       </div>
     </div>
     <div class="row justify-content-between editor-row">
@@ -103,12 +109,6 @@ export default Vue.extend({
     }
   },
 
-  watch: {
-    title: function(val, oldVal) {
-      this.title = val.trim();
-      this.setPermalink(this.title);
-    },
-  },
   methods: {
     setPermalink(val: any) {
       $http.post("getPermalink", { permalink: val }).then(resp => {
