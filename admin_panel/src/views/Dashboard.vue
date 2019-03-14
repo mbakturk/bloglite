@@ -22,7 +22,7 @@
               <td>{{post.authorName}}</td>
               <td>{{post.postDate}}</td>
               <td>
-                <a class="btn btn-primary btn-sm mr-2" href="javascript:;" onclick>Edit</a>
+                <button class="btn btn-primary btn-sm mr-2" @click="updatePost(post.id)">Edit</button>
                 <button class="btn btn-primary btn-sm mr-2" @click="deletePost(post.id)">Delete</button>
               </td>
               <td></td>
@@ -76,6 +76,9 @@ export default Vue.extend({
             this.pageNum = this.pageNum + direction;
           }
         });
+    },
+    updatePost: function(postId: number) {
+      this.$router.push({ path: `/editor/${postId}` });
     },
     deletePost: function(postId: number) {
       $http.post("deletePost", { id: postId }).then(resp => {

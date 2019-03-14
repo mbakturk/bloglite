@@ -19,7 +19,6 @@ const router = new Router({
     },
     {
       path: "/",
-      name: "panel",
       component: Panel,      
       meta: {
         requiresAuth: true
@@ -31,7 +30,7 @@ const router = new Router({
           component: Dashboard
         },
         {
-          path: 'editor',
+          path: 'editor/:id?',
           name: "editor",
           component: Editor
         },

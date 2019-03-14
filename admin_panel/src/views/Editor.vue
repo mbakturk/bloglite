@@ -58,6 +58,7 @@ declare const Quill: any;
 export default Vue.extend({
   data() {
     return {
+      postId: null,
       editor: null,
       title: "",
       permalink: "",
@@ -90,6 +91,16 @@ export default Vue.extend({
       },
       theme: "snow",
     });
+
+    if (this.$route.params.id) {
+      $http.post("post", { postId: +this.$route.params.id }).then(resp => {
+        this.postId = resp.data.post.id;
+        this.title = resp.data.post.title;
+        this.permalink = resp.data.post.permalink;
+        // @ts-ignore
+        this.editor.root.innerHTML = resp.data.post.entry;
+      });
+    }
   },
 
   watch: {
@@ -107,7 +118,7 @@ export default Vue.extend({
 
     submit() {
       var post = {
-        id: null,
+        id: this.postId,
         title: this.title,
         // @ts-ignore
         entry: this.editor.root.innerHTML,

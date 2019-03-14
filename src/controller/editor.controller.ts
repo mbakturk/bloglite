@@ -15,13 +15,14 @@ export class EditorController implements interfaces.Controller {
     @inject(PostDAO) private postDAO: PostDAO;
     private PAGE_SIZE: number = 10;
 
-    @httpGet("/editor")
-    private editorPage(@queryParam("post") postId: string, @response() res:Response) {
-        return this.postDAO.getPostById(+postId)
-            .pipe(
-                map(post => ({ post }))
-            ).toPromise()
-            .then(viewModel => res.render("editor", viewModel))
+    @httpPost("/post")
+    private post(req: Request, res: Response) {
+        return this.postDAO.getPostById(req.body.postId)
+            .toPromise()
+            .then(post => res.json({
+                retCode: 0,
+                post
+            }));
     }
 
     @httpPost("/updatePost")
@@ -81,24 +82,24 @@ export class EditorController implements interfaces.Controller {
                 const checkPermalink = (p) => {
                     p += suffix;
                     this.postDAO.isPermalinkExist(p)
-                    .subscribe(r => {
-                        if(r) {
-                            suffix += '-' + (counter++);
-                            checkPermalink(permalink);
-                        } else {
-                            observer.next(permalink);
+                        .subscribe(r => {
+                            if (r) {
+                                suffix += '-' + (counter++);
+                                checkPermalink(permalink);
+                            } else {
+                                observer.next(permalink);
+                                observer.complete();
+                            }
+                        }, e => {
+                            observer.error(e);
                             observer.complete();
-                        }
-                    }, e => {
-                        observer.error(e);
-                        observer.complete();
-                    })
+                        })
                 }
                 checkPermalink(permalink);
             }).toPromise()
                 .then(r => res.json({
                     retCode: 0,
-                    retMsg: 'Success',                    
+                    retMsg: 'Success',
                     permalink
                 })).catch(err => res.json({
                     retCode: 1,
@@ -127,7 +128,7 @@ export class EditorController implements interfaces.Controller {
                 )
             ).toPromise()
             .then(data => {
-                res.json(Object.assign(data, {retCode: 0 }));
+                res.json(Object.assign(data, { retCode: 0 }));
             });
     }
 }
