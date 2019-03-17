@@ -1,8 +1,9 @@
 module.exports = {
+    publicPath: './',
     configureWebpack: {
-        devtool: 'source-map'
+        devtool:  process.env.NODE_ENV === 'production' ? '' :  'source-map'
     },
     devServer: {
-        proxy: 'http://localhost:3000'
+        proxy: 'http://localhost:3000/securePath'
     }
 }

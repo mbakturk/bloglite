@@ -1,5 +1,5 @@
 import { BaseResp } from './model/response/base.resp';
-import { PostDAO } from './../repo/post.dao';
+import { PostDAO } from '../repo/post.dao';
 import "reflect-metadata";
 import { interfaces, controller, httpGet, httpPost, response, queryParam } from "inversify-express-utils";
 import { inject } from "inversify";
@@ -10,7 +10,7 @@ import { CommonUtils, SecurityUtils } from '../utils';
 import { Observable } from 'rxjs';
 
 @controller(SecurityUtils.securePath)
-export class EditorController implements interfaces.Controller {
+export class PostAdminController implements interfaces.Controller {
 
     @inject(PostDAO) private postDAO: PostDAO;
     private PAGE_SIZE: number = 10;

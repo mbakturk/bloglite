@@ -31,6 +31,7 @@ const clean = (cb) => {
     fs.mkdirSync("package/views");
     fs.mkdirSync("package/public");
     fs.mkdirSync("package/bin");
+    fs.mkdirSync("package/admin_panel");
 
     copyDir.sync("views", "package/views");
     copyDir.sync("public", "package/public");
@@ -54,7 +55,9 @@ const clean = (cb) => {
 
 const build = (cb) => {
     execSync("npm run build");
-    copyDir.sync("dist", "package/bin");
+    copyDir.sync("dist", "package/bin");    
+    execSync("cd admin_panel && npm run build");    
+    copyDir.sync("admin_panel/dist", "package/admin_panel");
     cb();
 }
 

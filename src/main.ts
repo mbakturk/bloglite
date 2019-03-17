@@ -36,21 +36,24 @@ server.setConfig((app) => {
 
     app.use(bodyParser.json());
     app.use(logger.handleExpressLogs.bind(logger));
+
     app.use(express.static(path.join(__dirname, '../public')));
+    app.use("/" + config.securePath, express.static(path.join(__dirname, config.adminPanel)));
+
     app.set("views", path.join(__dirname, '../views'));
     app.set("view engine", "pug");
-    
+
     app.use(session({
-        store: new SessionStore({db: config.database.path, table: 't_sessions'}),
+        store: new SessionStore({ db: config.database.path, table: 't_sessions' }),
         secret: config.sessionScreet,
         resave: true,
         saveUninitialized: false,
-        cookie: {maxAge: 7 * 24 * 60 * 60 * 1000 } // 1 week
+        cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 1 week
     }));
 
     app.use(SecurityUtils.checkReqAuth);
 
-   
+
 });
 
 

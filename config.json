@@ -1,5 +1,6 @@
 {
     "baseUrl": "http://mbakturk.com",
+    "adminPanel": "../admin_panel/dist",
     
     "server": {
         "port": 3000

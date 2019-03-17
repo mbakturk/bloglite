@@ -1,18 +1,5 @@
 <template>
   <div class="container editor-page">
-    <div class="row" id="alert-container">
-      <div v-if="postOK" class="alert alert-warning alert-dismissible fade show col" role="alert">
-        <strong>Congratulations!</strong> You published your post successfully.
-        <button
-          type="button"
-          class="close"
-          data-dismiss="alert"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    </div>
     <div class="row">
       <div class="col">
         <h1 class="mt-3 mb-3">Editor</h1>
@@ -38,7 +25,7 @@
           class="form-control permalink-input"
           aria-label="Permalink"
           v-model="permalink"
-          @change="setPermalink($event.target.value)"
+          @change="setPermalink($event.target.value, true)"
         >
       </div>
     </div>
@@ -110,10 +97,12 @@ export default Vue.extend({
   },
 
   methods: {
-    setPermalink(val: any) {
-      $http.post("getPermalink", { permalink: val }).then(resp => {
-        this.permalink = resp.data.permalink;
-      });
+    setPermalink(val: any, force: boolean = false) {
+      if (!this.permalink || !this.postId || force) {
+        $http.post("getPermalink", { permalink: val }).then(resp => {
+          this.permalink = resp.data.permalink;
+        });
+      }
     },
 
     submit() {
@@ -127,7 +116,7 @@ export default Vue.extend({
 
       $http
         .post(!post.id ? "createPost" : "updatePost", post)
-        .then(() => (this.postOK = true));
+        .then(() => this.$router.push({name: "dashboard"}));
     },
   },
 });

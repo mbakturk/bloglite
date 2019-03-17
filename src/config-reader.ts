@@ -5,6 +5,7 @@ import { DateUtils, SecurityUtils } from "./utils";
 export interface Config {
 
     baseUrl: string;
+    adminPanel: string;
 
     server: {
         port: number
