@@ -1,26 +1,28 @@
 import { BaseResp } from './model/response/base.resp';
-import { PostDAO } from './../repo/post.dao';
+import { PostDAO } from '../repo/post.dao';
 import "reflect-metadata";
 import { interfaces, controller, httpGet, httpPost, response, queryParam } from "inversify-express-utils";
 import { inject } from "inversify";
 import { Request, Response } from "express";
 import { Post } from '../repo/entity/post';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { CommonUtils, SecurityUtils } from '../utils';
 import { Observable } from 'rxjs';
 
-@controller(SecurityUtils.securityPath)
-export class EditorController implements interfaces.Controller {
+@controller(SecurityUtils.securePath)
+export class PostAdminController implements interfaces.Controller {
 
     @inject(PostDAO) private postDAO: PostDAO;
+    private PAGE_SIZE: number = 10;
 
-    @httpGet("/editor")
-    private editorPage(@queryParam("post") postId: string, @response() res:Response) {
-        return this.postDAO.getPostById(+postId)
-            .pipe(
-                map(post => ({ post }))
-            ).toPromise()
-            .then(viewModel => res.render("editor", viewModel))
+    @httpPost("/post")
+    private post(req: Request, res: Response) {
+        return this.postDAO.getPostById(req.body.postId)
+            .toPromise()
+            .then(post => res.json({
+                retCode: 0,
+                post
+            }));
     }
 
     @httpPost("/updatePost")
@@ -80,24 +82,24 @@ export class EditorController implements interfaces.Controller {
                 const checkPermalink = (p) => {
                     p += suffix;
                     this.postDAO.isPermalinkExist(p)
-                    .subscribe(r => {
-                        if(r) {
-                            suffix += '-' + (counter++);
-                            checkPermalink(permalink);
-                        } else {
-                            observer.next(permalink);
+                        .subscribe(r => {
+                            if (r) {
+                                suffix += '-' + (counter++);
+                                checkPermalink(permalink);
+                            } else {
+                                observer.next(permalink);
+                                observer.complete();
+                            }
+                        }, e => {
+                            observer.error(e);
                             observer.complete();
-                        }
-                    }, e => {
-                        observer.error(e);
-                        observer.complete();
-                    })
+                        })
                 }
                 checkPermalink(permalink);
             }).toPromise()
                 .then(r => res.json({
                     retCode: 0,
-                    retMsg: 'Success',                    
+                    retMsg: 'Success',
                     permalink
                 })).catch(err => res.json({
                     retCode: 1,
@@ -109,5 +111,24 @@ export class EditorController implements interfaces.Controller {
             retCode: -1,
             retMsg: 'Input error'
         })
+    }
+
+    @httpPost("/getLitePostList")
+    private getLitePostList(req: Request, res: Response) {
+        let mPage: number = 0;
+        const page = req.body.page;
+        if (page) {
+            mPage = +page - 1;
+        }
+
+        return this.postDAO.getLitePostList(this.PAGE_SIZE, this.PAGE_SIZE * mPage)
+            .pipe(
+                switchMap(postList => this.postDAO.getPostCount()
+                    .pipe(map(c => ({ totalPage: Math.ceil(c / this.PAGE_SIZE), postList })))
+                )
+            ).toPromise()
+            .then(data => {
+                res.json(Object.assign(data, { retCode: 0 }));
+            });
     }
 }

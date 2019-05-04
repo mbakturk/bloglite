@@ -9,21 +9,21 @@ import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { SecurityUtils } from '../utils';
 
-@controller(SecurityUtils.securityPath)
+@controller(SecurityUtils.securePath)
 export class LoginController implements interfaces.Controller {
 
     @inject(UserDAO) private userDAO: UserDAO;
 
-    @httpGet("/")
+    /*@httpGet("/")
     private loginPage(req: Request, res: Response, next: NextFunction) {
         if (req.session.user) {
-            res.redirect(SecurityUtils.securityPath + "/dashboard")
+            res.redirect(SecurityUtils.securePath + "/dashboard")
             return;
         }
         res.render("login");
-    }
+    }*/
 
-    @httpPost("/")
+    @httpPost("/login")
     private authenticate(req: Request, res: Response, next: NextFunction) {
         // you might like to do a database look-up or something more scalable here
         if (req.body.email) {
@@ -39,14 +39,10 @@ export class LoginController implements interfaces.Controller {
                     })
                 ).toPromise()
                 .then(isSuccess => {
-                    if (isSuccess) {
-                        res.redirect(SecurityUtils.securityPath + "/dashboard")
-                    } else {
-                        res.redirect(SecurityUtils.securityPath);
-                    }
+                    res.json({ retCode: isSuccess === false ? 1 : 0 })
                 });
         }
-        res.redirect(SecurityUtils.securityPath);
+        res.json({ retCode: 2 });
     }
 
 

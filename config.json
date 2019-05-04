@@ -1,5 +1,6 @@
 {
     "baseUrl": "http://mbakturk.com",
+    "adminPanel": "../admin_panel/dist",
     
     "server": {
         "port": 3000
@@ -17,5 +18,5 @@
 
     "timezone": "Europe/Istanbul",
 
-    "securityPath": "securityPath"
+    "securePath": "securePath"
 }

@@ -5,6 +5,7 @@ import { DateUtils, SecurityUtils } from "./utils";
 export interface Config {
 
     baseUrl: string;
+    adminPanel: string;
 
     server: {
         port: number
@@ -24,7 +25,7 @@ export interface Config {
 
     timezone: string;
 
-    securityPath: string;
+    securePath: string;
 }
 
 
@@ -35,7 +36,7 @@ const fetchServerConfig = (): Config => {
     
     // Utils settings
     DateUtils.timezone = config.timezone;    
-    SecurityUtils.securityPath = "/" + config.securityPath;
+    SecurityUtils.securePath = "/" + config.securePath;
     return config;
 };
 

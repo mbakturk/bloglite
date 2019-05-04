@@ -22,7 +22,7 @@ require(["jquery", "bootstrap"],
                 permalink: $("#permalink").val()
             }
 
-            $.post(post.id === -1 ? securityPath +"createPost" : securityPath +"updatePost", post)
+            $.post(post.id === -1 ? securePath +"createPost" : securePath +"updatePost", post)
                 .done(function () {
                     $("#alert-container").append(
                         `<div class="alert alert-warning alert-dismissible fade show col" role="alert">
@@ -37,7 +37,7 @@ require(["jquery", "bootstrap"],
         };
 
         window.editor.setPermalink = function (text) {
-            return $.post(securityPath + "getPermalink", { permalink: text }).done(function (resp) {
+            return $.post(securePath + "getPermalink", { permalink: text }).done(function (resp) {
                 $("#permalink").val(resp.permalink);
             })
         }

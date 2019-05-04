@@ -1,7 +1,6 @@
 import { Container } from "inversify";
 import { Config, config } from './config-reader';
-import { DashboardController } from './controller/dashboard.controller';
-import { EditorController } from './controller/editor.controller';
+import { PostAdminController } from './controller/post.admin.controller';
 import { LoginController } from './controller/login.controller';
 import { PostController } from './controller/post.controller';
 import { RSSController } from './controller/rss.controller';
@@ -19,8 +18,7 @@ container.bind<Database>(Database).toSelf().inSingletonScope();
 container.bind<UserDAO>(UserDAO).toSelf().inSingletonScope();
 container.bind<PostDAO>(PostDAO).toSelf().inSingletonScope();
 container.bind<LoginController>(LoginController).toSelf();
-container.bind<DashboardController>(DashboardController).toSelf();
-container.bind<EditorController>(EditorController).toSelf();
+container.bind<PostAdminController>(PostAdminController).toSelf();
 container.bind<PostController>(PostController).toSelf();
 container.bind<RSSController>(RSSController).toSelf();
 
