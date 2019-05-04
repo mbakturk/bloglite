@@ -41,9 +41,9 @@ const clean = (cb) => {
 
     const packageJson = readJsonFile("package.json");
 
-    packageJson.main = "bin/main.js";
+    packageJson.main = "bin/bloglite.server.js";
     packageJson.scripts = {
-        start: "node bin/main.js"
+        start: "node bin/bloglite.server.js"
     }
 
     delete packageJson.devDependencies;
