@@ -10,9 +10,11 @@ export class PostDAO {
 
     @inject(Database) private db: Database;
 
-    public getPostList(count: number, offset: number): Observable<Post[]> {
+    public getPostList(count: number, offset: number, status?:number): Observable<Post[]> {
         return this.db.queryAll(`SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.entry, p.status,
-        u.id as authorId, u.name as authorName FROM t_post as p LEFT JOIN t_user u ON p.author == u.id ORDER BY p.post_date DESC LIMIT ? OFFSET ?`, [count, offset]);
+        u.id as authorId, u.name as authorName FROM t_post as p LEFT JOIN t_user u ON p.author == u.id
+        ${!isNaN(status) ? 'WHERE p.status = ' + status : '' } 
+        ORDER BY p.post_date DESC LIMIT ? OFFSET ?`, [count, offset]);
     }
 
     public getLitePostList(count: number, offset: number): Observable<Post[]> {
@@ -49,7 +51,8 @@ export class PostDAO {
 
     public getPostByPermalink(permalink: string): Observable<Post> {
         return this.db.query(`SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.entry, p.status, u.id as authorId, u.name as authorName 
-             FROM t_post as p LEFT JOIN t_user u ON p.author == u.id WHERE p.permalink = ?`,[permalink]);
+             FROM t_post as p LEFT JOIN t_user u ON p.author == u.id
+             WHERE p.permalink = ? AND p.status = 1`,[permalink]);
     }
 
     public getPostById(id: number): Observable<Post> {

@@ -22,7 +22,7 @@ export class PostController implements interfaces.Controller {
         if (page) {
             mPage = +page - 1;
         }
-        return zip(this.postDAO.getPostList(this.PAGE_SIZE, this.PAGE_SIZE * mPage), this.postDAO.getPostCount())
+        return zip(this.postDAO.getPostList(this.PAGE_SIZE, this.PAGE_SIZE * mPage, 1), this.postDAO.getPostCount())
             .pipe(
                 map(d => ({
                     postList: d[0],
