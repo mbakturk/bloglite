@@ -46,7 +46,8 @@ export class PostAdminController implements interfaces.Controller {
         const resp: BaseResp = { retCode: -1 };
         const post: Post = req.body;
         if (post) {
-            return this.postDAO.createPost(post.title, post.permalink, post.entry, req.session.user.id)
+            return this.postDAO.createPost(post.title, post.permalink, post.entry, post.status,
+                req.session.user.id)
                 .toPromise()
                 .then(r => {
                     resp.retCode = 0;

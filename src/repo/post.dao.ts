@@ -11,17 +11,17 @@ export class PostDAO {
     @inject(Database) private db: Database;
 
     public getPostList(count: number, offset: number): Observable<Post[]> {
-        return this.db.queryAll(`SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.entry, u.id as authorId, u.name as authorName 
-        FROM t_post as p LEFT JOIN t_user u ON p.author == u.id ORDER BY p.post_date DESC LIMIT ? OFFSET ?`, [count, offset]);
+        return this.db.queryAll(`SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.entry, p.status,
+        u.id as authorId, u.name as authorName FROM t_post as p LEFT JOIN t_user u ON p.author == u.id ORDER BY p.post_date DESC LIMIT ? OFFSET ?`, [count, offset]);
     }
 
     public getLitePostList(count: number, offset: number): Observable<Post[]> {
-        return this.db.queryAll(`SELECT p.id, p.title, p.permalink, p.post_date as postDate, u.name as authorName 
+        return this.db.queryAll(`SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.status, u.name as authorName 
         FROM t_post as p LEFT JOIN t_user u ON p.author == u.id ORDER BY p.post_date DESC LIMIT ? OFFSET ?`, [count, offset]);
     }
     
-    public createPost(title: string, permalink: string, entry: string, authorId: number): Observable<number> {
-        return this.db.run("INSERT INTO t_post (title, permalink, entry, author) VALUES (?,?,?,?)", [title, permalink, entry, authorId])
+    public createPost(title: string, permalink: string, entry: string, status: number, authorId: number): Observable<number> {
+        return this.db.run("INSERT INTO t_post (title, permalink, entry, author, status) VALUES (?,?,?,?,?)", [title, permalink, entry, authorId, status])
         .pipe(map(data => data.lastID));
     }
 
@@ -30,7 +30,7 @@ export class PostDAO {
     }
 
     public updatePost(post: Post): Observable<any> {
-        const updateables = ["title", "permalink", "entry"];
+        const updateables = ["title", "permalink", "entry", "status"];
         let updates = [];
         const values = [];
 
@@ -48,13 +48,13 @@ export class PostDAO {
     }
 
     public getPostByPermalink(permalink: string): Observable<Post> {
-        return this.db.query(`SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.entry, u.id as authorId, u.name as authorName 
+        return this.db.query(`SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.entry, p.status, u.id as authorId, u.name as authorName 
              FROM t_post as p LEFT JOIN t_user u ON p.author == u.id WHERE p.permalink = ?`,[permalink]);
     }
 
     public getPostById(id: number): Observable<Post> {
         return this.db.query(
-            `SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.entry, u.id as authorId, u.name as authorName 
+            `SELECT p.id, p.title, p.permalink, p.post_date as postDate, p.entry, p.status, u.id as authorId, u.name as authorName 
              FROM t_post as p LEFT JOIN t_user u ON p.author == u.id WHERE p.id = ?`, [id]);
     }
 

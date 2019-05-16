@@ -35,6 +35,13 @@
       </div>
     </div>
     <div class="row justify-content-end">
+      <label class="col-auto col-form-label">Status:</label>
+      <div class="col-auto">
+        <select v-model="status" class="form-control">
+          <option value="0">Drafted</option>
+          <option value="1">Published</option>
+        </select>
+      </div>
       <div class="col-auto">
         <button class="btn btn-primary" type="button" @click="submit()">Publish</button>
       </div>
@@ -56,6 +63,7 @@ export default Vue.extend({
       title: "",
       permalink: "",
       postOK: false,
+      status: 0,
     };
   },
 
@@ -90,6 +98,7 @@ export default Vue.extend({
         this.postId = resp.data.post.id;
         this.title = resp.data.post.title;
         this.permalink = resp.data.post.permalink;
+        this.status = resp.data.post.status;
         // @ts-ignore
         this.editor.root.innerHTML = resp.data.post.entry;
       });
@@ -112,11 +121,12 @@ export default Vue.extend({
         // @ts-ignore
         entry: this.editor.root.innerHTML,
         permalink: this.permalink,
+        status: this.status
       };
 
       $http
         .post(!post.id ? "createPost" : "updatePost", post)
-        .then(() => this.$router.push({name: "dashboard"}));
+        .then(() => this.$router.push({ name: "dashboard" }));
     },
   },
 });

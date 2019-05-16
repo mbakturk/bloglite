@@ -8,4 +8,5 @@ export interface Post {
     entry?:string;
     authorId?: number;
     authorName?: string;
+    status: number;
 }
