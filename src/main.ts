@@ -48,7 +48,8 @@ server.setConfig((app) => {
         secret: config.sessionScreet,
         resave: true,
         saveUninitialized: false,
-        cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 1 week
+        rolling: true,
+        cookie: { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true } // 1 week
     }));
 
     app.use(SecurityUtils.checkReqAuth);
