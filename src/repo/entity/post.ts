@@ -5,6 +5,7 @@ export interface Post {
     title?:string;
     permalink?:string;
     postDate?:Date;
+    updateDate?:Date;
     entry?:string;
     authorId?: number;
     authorName?: string;

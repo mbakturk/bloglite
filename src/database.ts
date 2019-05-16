@@ -3,6 +3,7 @@ import { Logger } from "winston";
 import { Config } from "./config-reader";
 import { Database as SqliteDatabase } from "sqlite3";
 import { Observable } from "rxjs";
+import { CommonUtils } from './utils';
 
 @injectable()
 export class Database {
@@ -38,7 +39,7 @@ export class Database {
                     this.logger.error(`An error accoured while querying db. Error stack it ${err.stack}`);
                     observer.error(err);
                 } else {
-                    observer.next(method === "run" ? this : data);
+                    observer.next(method === "run" ? this : CommonUtils.camelcase(data));
                 }
                 observer.complete();
             });

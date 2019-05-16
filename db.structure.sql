@@ -1,7 +1,7 @@
 --
--- File generated with SQLiteStudio v3.2.1 on Thu May 16 09:25:11 2019
+-- File generated with SQLiteStudio v3.2.1 on Thu May 16 11:23:43 2019
 --
--- Text encoding used: System
+-- Text encoding used: UTF-8
 --
 PRAGMA foreign_keys = off;
 BEGIN TRANSACTION;
@@ -10,7 +10,7 @@ BEGIN TRANSACTION;
 CREATE TABLE t_metadata ("key" VARCHAR PRIMARY KEY, value VARCHAR);
 
 -- Table: t_post
-CREATE TABLE t_post (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT UNIQUE, permalink TEXT UNIQUE, post_date DATETIME DEFAULT (CURRENT_TIMESTAMP), entry TEXT, author INTEGER REFERENCES t_user (id), status INT DEFAULT (0));
+CREATE TABLE t_post (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT UNIQUE, permalink TEXT UNIQUE, post_date DATETIME DEFAULT (CURRENT_TIMESTAMP), entry TEXT, author INTEGER REFERENCES t_user (id), status INT DEFAULT (0), update_date DATETIME);
 
 -- Table: t_sessions
 CREATE TABLE t_sessions (sid PRIMARY KEY, expired, sess);

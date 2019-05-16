@@ -1,3 +1,5 @@
+import * as camelCase from 'camelcase';
+
 export class CommonUtils {
 
     public static generatePermalink(text: string): string {
@@ -21,5 +23,20 @@ export class CommonUtils {
 
     public static replaceAll(target: string, search: string, replacement: string): string {
         return target.replace(new RegExp(search, 'g'), replacement);
+    }
+
+    public static camelcase(data): any {
+        if (data instanceof Array) {
+            for (let i = 0, l = data.length; i < l; i++) {
+                const temp = data[i];
+                for (const key in temp) {
+                    const value = temp[key];
+                    delete temp[key];
+                    temp[camelCase(key)] = value;
+                }
+            }
+        }
+
+        return data;
     }
 }
