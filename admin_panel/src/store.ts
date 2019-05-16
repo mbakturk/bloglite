@@ -10,6 +10,9 @@ export default new Vuex.Store({
   mutations: {
     logIn(state) {
       state.loggedIn = true;
+    },
+    logOut(state) {
+      state.loggedIn = false;
     }
   },
   getters: {
@@ -20,6 +23,9 @@ export default new Vuex.Store({
   actions: {
     logIn({ commit }) {
       commit('logIn');
+    },
+    logOut({ commit }) {
+      commit('logOut');
     }
   }
 });

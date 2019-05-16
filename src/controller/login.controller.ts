@@ -33,7 +33,7 @@ export class LoginController implements interfaces.Controller {
                     switchMap(user => {
                         if (user && user.password === req.body.password) {
                             req.session.user = user;
-                            return SessionUtils.saveSession(req.session);
+                            return SessionUtils.save(req.session);
                         }
                         return of(false);
                     })
@@ -45,5 +45,19 @@ export class LoginController implements interfaces.Controller {
         res.json({ retCode: 2 });
     }
 
+    @httpPost("/logout")
+    private logout(req: Request, res: Response, next: NextFunction) {
+        return SessionUtils.destroy(req.session).toPromise()
+            .then(isSuccess => {
+                res.json({ retCode: isSuccess === false ? 1 : 0 })
+            }).catch(err => {
+                retCode: -1 // internal error
+            });
+    }
+
+    @httpPost("/heartbeat")
+    private heartbeat(req: Request, res: Response, next: NextFunction) {
+        res.json({ retCode: 0 });
+    }
 
 }

@@ -5,6 +5,9 @@ import Panel from "./views/Panel.vue";
 import Dashboard from "./views/Dashboard.vue";
 import Editor from "./views/Editor.vue";
 import store from "./store";
+import $http from "./http-client";
+
+let isFirstLoad = true;
 
 Vue.use(Router);
 const router = new Router({
@@ -19,7 +22,7 @@ const router = new Router({
     },
     {
       path: "/",
-      component: Panel,      
+      component: Panel,
       meta: {
         requiresAuth: true
       },
@@ -39,16 +42,31 @@ const router = new Router({
   ]
 });
 
-router.beforeEach((to:any, from: any, next: any) => {
+const guard = (to: any, from: any, next: any) => {
+
+  if (isFirstLoad) {
+    $http.post("heartbeat").then(resp => {
+      if (resp.data.retCode === 0) {
+        store.dispatch("logIn");
+      }
+      guard(to, from, next);
+    }).catch(err => {
+      guard(to, from, next);
+    });
+    isFirstLoad = false;
+    return;
+  }
+
   if (to.matched.some((record: any) => record.meta.requiresAuth)) {
-    if(store.getters.isloggedIn) {
+    if (store.getters.isloggedIn) {
       return next();
     }
     return next('/login')
   }
 
   next();
-});
+}
 
+router.beforeEach(guard);
 
 export default router;
