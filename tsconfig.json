@@ -1,20 +1,33 @@
 {
     "compilerOptions": {
-        "lib": ["es6", "dom"],
-        "target": "es6",
-        "module": "commonjs",
+        "target": "esnext",
+        "module": "esnext",
         "moduleResolution": "node",
-        "types": ["reflect-metadata"],
+        "lib": [
+            "esnext",
+            "esnext.asynciterable",
+            "dom"
+        ],
         "emitDecoratorMetadata": true,
+        "esModuleInterop": true,
         "experimentalDecorators": true,
+        "allowJs": true,
         "sourceMap": true,
-        "outDir": "dist"
-    },
-
-    "include": [
-        "src/*"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
+        "strict": true,
+        "noImplicitAny": false,
+        "noEmit": true,
+        "baseUrl": ".",
+        "paths": {
+            "~/*": [
+                "src/*"
+            ],
+            "@/*": [
+                "src/*"
+            ]
+        },
+        "types": [
+            "@types/node",
+            "@nuxt/vue-app"
+        ]
+    }
 }

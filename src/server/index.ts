@@ -6,14 +6,18 @@ import * as bodyParser from "body-parser";
 import * as path from "path";
 import * as fs from "fs";
 import * as express from "express";
-import * as session from "express-session";
+import session from "express-session";
 import { SysLogger, LoggerCreator } from "./logger";
 import { Config } from "./config-reader";
 import { SecurityUtils } from "./utils";
+import nuxtConfig from '../../nuxt.config';
+import {Nuxt, Builder} from 'nuxt';
 
 const SessionStore = require('connect-sqlite3')(session);
 const config: Config = container.get('Config');
 const logger: SysLogger = container.get('Logger');
+config.dev = !(process.env.NODE_ENV === 'production');
+
 
 // create necessary directories
 [
@@ -26,7 +30,9 @@ const logger: SysLogger = container.get('Logger');
 
 // create server
 let server = new InversifyExpressServer(container);
-server.setConfig((app) => {
+const nuxt = new Nuxt(nuxtConfig);
+
+server.setConfig(async app => {
 
     // add body parser
     app.use(bodyParser.urlencoded({
@@ -35,13 +41,21 @@ server.setConfig((app) => {
     }));
 
     app.use(bodyParser.json());
-    app.use(logger.handleExpressLogs.bind(logger));
 
-    app.use(express.static(path.join(__dirname, '../public')));
+    // Build only in dev mode
+
+    if(config.dev) {
+        const builder = new Builder(nuxt);
+        await builder.build();
+    } else {
+        await nuxt.ready();
+    }
+
+    app.use(logger.handleExpressLogs.bind(logger));
+    
     app.use("/" + config.securePath, express.static(path.join(__dirname, config.adminPanel)));
 
-    app.set("views", path.join(__dirname, '../views'));
-    app.set("view engine", "pug");
+    app.use(nuxt.render);
 
     app.use(session({
         store: new SessionStore({ db: config.database.path, table: 't_sessions' }),
@@ -60,7 +74,7 @@ server.setConfig((app) => {
 
 
 let app = server.build();
-app.use(RequestHandlerUtils.handle404);
-app.use(RequestHandlerUtils.handle500);
+/*app.use(RequestHandlerUtils.handle404);
+app.use(RequestHandlerUtils.handle500);*/
 app.listen(config.server.port);
 logger.info("Bloglite is running!");

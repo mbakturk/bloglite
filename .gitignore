@@ -4,7 +4,9 @@ sessions/
 logs/
 public/pics
 public/styles
-
+.build
+.nuxt
+build
 package
 
 package-lock.json

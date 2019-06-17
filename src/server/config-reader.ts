@@ -7,6 +7,8 @@ export interface Config {
     baseUrl: string;
     adminPanel: string;
 
+    dev: boolean;
+
     server: {
         port: number
     };
@@ -30,7 +32,7 @@ export interface Config {
 
 
 const fetchServerConfig = (): Config => {
-    const filePath = path.join(__dirname, "../config.json");
+    const filePath = path.join(__dirname, "../../config.json");
     // console.log('Config file\'s path is ' + filePath);
     const config: Config = JSON.parse(fs.readFileSync(filePath, "utf8"));
     

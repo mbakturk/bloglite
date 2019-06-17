@@ -8,7 +8,7 @@ import { Database } from "../database";
 @injectable()
 export class UserDAO {
 
-    @inject(Database) private db: Database;
+    @inject(Database) private db!: Database;
 
 
     public getUserList(): Observable<User[]> {

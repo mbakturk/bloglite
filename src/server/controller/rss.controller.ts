@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { Response, Request } from 'express';
 import { httpGet, controller, interfaces } from 'inversify-express-utils';
 import * as RSS from 'rss';
@@ -9,8 +8,8 @@ import { Config } from "../config-reader";
 @controller("/")
 export class RSSController implements interfaces.Controller {
 
-    @inject(PostDAO) private postDAO: PostDAO;
-    @inject('Config') private config: Config;
+    @inject(PostDAO) private postDAO!: PostDAO;
+    @inject('Config') private config!: Config;
 
     @httpGet("rss")
     public rss(req: Request, res: Response) {

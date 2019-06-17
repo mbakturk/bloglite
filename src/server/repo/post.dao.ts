@@ -8,12 +8,12 @@ import { map } from "rxjs/operators";
 @injectable()
 export class PostDAO {
 
-    @inject(Database) private db: Database;
+    @inject(Database) private db!: Database;
 
-    public getPostList(count: number, offset: number, status?:number): Observable<Post[]> {
+    public getPostList(count: number, offset: number, status?: number): Observable<Post[]> {
         return this.db.queryAll(`SELECT p.*, u.id as authorId, u.name as authorName 
         FROM t_post as p LEFT JOIN t_user u ON p.author == u.id
-        ${!isNaN(status) ? 'WHERE p.status = ' + status : '' } 
+        ${!isNaN(status!) ? 'WHERE p.status = ' + status : ''} 
         ORDER BY p.post_date DESC LIMIT ? OFFSET ?`, [count, offset]);
     }
 
@@ -21,10 +21,10 @@ export class PostDAO {
         return this.db.queryAll(`SELECT p.id, p.title, p.permalink, p.post_date, p.status, u.name as authorName 
         FROM t_post as p LEFT JOIN t_user u ON p.author == u.id ORDER BY p.post_date DESC LIMIT ? OFFSET ?`, [count, offset]);
     }
-    
+
     public createPost(title: string, permalink: string, entry: string, status: number, authorId: number): Observable<number> {
         return this.db.run("INSERT INTO t_post (title, permalink, entry, author, status) VALUES (?,?,?,?,?)", [title, permalink, entry, authorId, status])
-        .pipe(map(data => data.lastID));
+            .pipe(map(data => data.lastID));
     }
 
     public deletePostById(id: number): Observable<any> {
@@ -33,8 +33,8 @@ export class PostDAO {
 
     public updatePost(post: Post): Observable<any> {
         const updateables = ["title", "permalink", "entry", "status"];
-        let updates = [];
-        const values = [];
+        let updates: string[] = [];
+        const values: string[] = [];
 
         updateables.forEach(property => {
             const value = post[property];
@@ -44,11 +44,11 @@ export class PostDAO {
             }
         });
 
-        if(values.length === 0) {
+        if (values.length === 0) {
             return EMPTY;
         }
 
-        values.push(post.id);        
+        values.push(post.id + '');
 
         return this.db.run(`UPDATE t_post SET update_date = CURRENT_TIMESTAMP, ${updates.join(",")} WHERE id = ?`, values);
     }
@@ -56,7 +56,7 @@ export class PostDAO {
     public getPostByPermalink(permalink: string): Observable<Post> {
         return this.db.query(`SELECT p.*, u.id as authorId, u.name as authorName 
              FROM t_post as p LEFT JOIN t_user u ON p.author == u.id
-             WHERE p.permalink = ? AND p.status = 1`,[permalink]);
+             WHERE p.permalink = ? AND p.status = 1`, [permalink]);
     }
 
     public getPostById(id: number): Observable<Post> {
@@ -75,13 +75,13 @@ export class PostDAO {
 
     public isPermalinkExist(permalink: string): Observable<boolean> {
         return this.db.query('SELECT permalink FROM t_post WHERE permalink = ?', [permalink])
-        .pipe(map(row => {
-            if(row) {
-                return true;
-            } else {
-                return false;
-            }
-        }))
+            .pipe(map(row => {
+                if (row) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }))
     }
 
 }

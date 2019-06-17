@@ -3,7 +3,7 @@ import { Request, NextFunction, Response } from "express";
 import { Logger, format, createLogger, transports, info } from "winston";
 import { Config } from "./config-reader";
 import * as path from "path";
-import * as DailyRotateFile from "winston-daily-rotate-file";
+import DailyRotateFile from "winston-daily-rotate-file";
 import { DateUtils } from './utils';
 
 export interface SysLogger extends Logger {
@@ -15,7 +15,7 @@ const LoggerCreator = (container): SysLogger => {
     const config: Config = container.get("Config");
     const logDir: string = path.join(process.cwd(), config.log.path);
 
-    const timestamp = format((info, opts) =>{
+    const timestamp = format((info, opts) => {
         info.timestamp = DateUtils.now().format('YYYY-MM-DD HH:mm:ss');
         return info;
     });
@@ -44,7 +44,7 @@ const LoggerCreator = (container): SysLogger => {
         transports: [
             errorTransport,
             combinedTransport,
-            new transports.Console({ level: "info"})
+            new transports.Console({ level: "info" })
         ]
     }) as SysLogger;
 

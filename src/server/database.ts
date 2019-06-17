@@ -8,7 +8,7 @@ import { CommonUtils } from './utils';
 @injectable()
 export class Database {
 
-    @inject("Logger") private logger: Logger;
+    @inject("Logger") private logger!: Logger;
     private db: SqliteDatabase;
 
     constructor(@inject("Config") private config: Config) {

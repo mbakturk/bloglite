@@ -6,7 +6,7 @@ export interface Post {
     permalink?:string;
     postDate?:Date;
     updateDate?:Date;
-    entry?:string;
+    entry:string;
     authorId?: number;
     authorName?: string;
     status: number;

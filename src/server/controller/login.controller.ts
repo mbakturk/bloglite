@@ -12,7 +12,7 @@ import { SecurityUtils } from '../utils';
 @controller(SecurityUtils.securePath)
 export class LoginController implements interfaces.Controller {
 
-    @inject(UserDAO) private userDAO: UserDAO;
+    @inject(UserDAO) private userDAO!: UserDAO;
 
     /*@httpGet("/")
     private loginPage(req: Request, res: Response, next: NextFunction) {
@@ -32,8 +32,8 @@ export class LoginController implements interfaces.Controller {
                 .pipe(
                     switchMap(user => {
                         if (user && user.password === req.body.password) {
-                            req.session.user = user;
-                            return SessionUtils.save(req.session);
+                            req.session!.user = user;
+                            return SessionUtils.save(req.session!);
                         }
                         return of(false);
                     })
@@ -47,7 +47,7 @@ export class LoginController implements interfaces.Controller {
 
     @httpPost("/logout")
     private logout(req: Request, res: Response, next: NextFunction) {
-        return SessionUtils.destroy(req.session).toPromise()
+        return SessionUtils.destroy(req.session!).toPromise()
             .then(isSuccess => {
                 res.json({ retCode: isSuccess === false ? 1 : 0 })
             }).catch(err => {

@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 @controller(SecurityUtils.securePath)
 export class PostAdminController implements interfaces.Controller {
 
-    @inject(PostDAO) private postDAO: PostDAO;
+    @inject(PostDAO) private postDAO!: PostDAO;
     private PAGE_SIZE: number = 10;
 
     @httpPost("/post")
@@ -46,8 +46,8 @@ export class PostAdminController implements interfaces.Controller {
         const resp: BaseResp = { retCode: -1 };
         const post: Post = req.body;
         if (post) {
-            return this.postDAO.createPost(post.title, post.permalink, post.entry, post.status,
-                req.session.user.id)
+            return this.postDAO.createPost(post.title!, post.permalink!, post.entry, post.status,
+                req.session!.user.id)
                 .toPromise()
                 .then(r => {
                     resp.retCode = 0;
@@ -61,7 +61,7 @@ export class PostAdminController implements interfaces.Controller {
     @httpPost("/deletePost")
     private deletePost(req: Request, res: Response) {
         const resp: BaseResp = { retCode: -1 };
-        const postId: number = req.body ? +req.body.id : null;
+        const postId: number | null = req.body ? +req.body.id : null;
         if (postId) {
             return this.postDAO.deletePostById(postId)
                 .toPromise()
