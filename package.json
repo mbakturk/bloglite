@@ -7,12 +7,12 @@
     "dev": "backpack dev",
     "dev-build": "backpack",
     "build": "nuxt build && backpack build",
-    "start": "cross-env NODE_ENV=production node build/main.js"
+    "start": "cross-env NODE_ENV=production node .build/main.js"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
     "bootstrap": "^4.1.3",
-    "bootstrap-vue": "^2.0.0-rc.23",
+    "bootstrap-vue": "^2.0.0-rc.24",
     "camelcase": "^5.0.0",
     "connect-sqlite3": "^0.9.11",
     "cross-env": "^5.2.0",
@@ -46,7 +46,8 @@
     "copy-dir": "^0.4.0",
     "del": "^3.0.0",
     "gulp": "^4.0.0",
-    "node-sass": "^4.9.4",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^7.1.0",
     "ts-loader": "^5.4.5",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.2",

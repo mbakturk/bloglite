@@ -1,0 +1,22 @@
+@font-face {
+    font-family: 'roboto';
+    src: url('/fonts/Roboto-Light.ttf');
+}
+
+@font-face {
+    font-family: 'roboto-italic';
+    src: url('/fonts/Roboto-LightItalic.ttf');
+}
+
+$enable-shadows: 'true';
+$font-family-base: 'roboto';
+$spacer: 0.5em;
+
+$link-color: #000000;
+
+@import 'bootstrap/scss/bootstrap.scss';
+@import 'bootstrap-vue/src/index.scss';
+
+.mt-6 {
+    margin-top: ($spacer * 4) !important;
+}

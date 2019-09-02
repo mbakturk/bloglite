@@ -1,9 +1,9 @@
 import { Error404 } from './../common/error/error-404';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { PostDAO } from './../repo/post.dao';
 
 import "reflect-metadata";
-import { interfaces, controller, httpGet, requestParam, response, queryParam } from "inversify-express-utils";
+import { interfaces, controller, httpGet, requestParam, response, queryParam, httpPost } from "inversify-express-utils";
 import { inject } from "inversify";
 import { Response, Request } from 'express';
 import { zip } from 'rxjs';
@@ -35,6 +35,33 @@ export class PostController implements interfaces.Controller {
  
  
      }*/
+
+    @httpPost("api/getAllPosts")
+    private getAllPosts(req: Request, res: Response) {
+        let mPage: number = 0;
+        const page = req.body.page;
+
+         if (page) {
+             mPage = +page - 1;
+         }
+
+        return this.postDAO.getPostList(this.PAGE_SIZE, this.PAGE_SIZE * mPage)
+            .pipe(
+                switchMap(postList => this.postDAO.getPostCount()
+                    .pipe(map(c => ({ totalPage: Math.ceil(c / this.PAGE_SIZE), postList })))
+                )
+            )
+            .toPromise()
+            .then(resp => {
+                res.json(resp);
+            })
+            .catch(err => {
+                res.json({
+                    retCode: -1,
+                    retMsg: 'Internal Error'
+                });
+            })
+    }
 
     @httpGet("p/:permalink")
     private postPage(@requestParam("permalink") permalink: string, @response() res: Response) {
